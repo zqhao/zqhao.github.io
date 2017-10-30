@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Spring," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="2017即将接近尾声，每当年末的时候总要检查下今年还有什么事情没做，结果却发现今年好像也没做多少事情😶。于是就想着把之前一直想梳理的Spring知识，趁着年末好好整理下。本系列笔记基于”Spring3.x企业应用开发实战“一书，说来惭愧，书买了好多年了也没认真的看一遍，于是就有了这个想法，算是2017年的最后给自己的一份交代。">
+<meta name="keywords" content="Spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring3.X学习笔记1-IoC容器概述">
+<meta property="og:url" content="http://yoursite.com/2017/10/28/Spring学习笔记1-IoC容器概述/index.html">
+<meta property="og:site_name" content="功不唐捐">
+<meta property="og:description" content="2017即将接近尾声，每当年末的时候总要检查下今年还有什么事情没做，结果却发现今年好像也没做多少事情😶。于是就想着把之前一直想梳理的Spring知识，趁着年末好好整理下。本系列笔记基于”Spring3.x企业应用开发实战“一书，说来惭愧，书买了好多年了也没认真的看一遍，于是就有了这个想法，算是2017年的最后给自己的一份交代。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/image/201710/Spring和Web应用的上下文融合.png">
+<meta property="og:image" content="http://yoursite.com/image/201710/BeanFactory中Bean的生命周期.png">
+<meta property="og:image" content="http://yoursite.com/image/201710/ApplicationContext中Bean的生命周期.png">
+<meta property="og:updated_time" content="2017-10-30T14:58:37.022Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring3.X学习笔记1-IoC容器概述">
+<meta name="twitter:description" content="2017即将接近尾声，每当年末的时候总要检查下今年还有什么事情没做，结果却发现今年好像也没做多少事情😶。于是就想着把之前一直想梳理的Spring知识，趁着年末好好整理下。本系列笔记基于”Spring3.x企业应用开发实战“一书，说来惭愧，书买了好多年了也没认真的看一遍，于是就有了这个想法，算是2017年的最后给自己的一份交代。">
+<meta name="twitter:image" content="http://yoursite.com/image/201710/Spring和Web应用的上下文融合.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/10/28/Spring学习笔记1-IoC容器概述/"/>
+
+
+
+
+
+  <title>Spring3.X学习笔记1-IoC容器概述 | 功不唐捐</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">功不唐捐</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">耐心专注</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/28/Spring学习笔记1-IoC容器概述/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zqhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/touxiang.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="功不唐捐">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Spring3.X学习笔记1-IoC容器概述</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-28T20:14:00+08:00">
+                2017-10-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring/" itemprop="url" rel="index">
+                    <span itemprop="name">Spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/10/28/Spring学习笔记1-IoC容器概述/" class="leancloud_visitors" data-flag-title="Spring3.X学习笔记1-IoC容器概述">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4,719 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  19 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>2017即将接近尾声，每当年末的时候总要检查下今年还有什么事情没做，结果却发现今年好像也没做多少事情😶。于是就想着把之前一直想梳理的Spring知识，趁着年末好好整理下。本系列笔记基于”Spring3.x企业应用开发实战“一书，说来惭愧，书买了好多年了也没认真的看一遍，于是就有了这个想法，算是2017年的最后给自己的一份交代。</p>
+</blockquote>
+<a id="more"></a>
+<p><strong>在开始之前，先简要介绍下Spring吧！</strong></p>
+<p>Spring是分层的Java SE/EE应用一站式的轻量级开源框架，由Rod Johnson创建，以IoC和AOP为内核，提供了展现层Spring MVC和持久层Spring JDBC以及业务层事务管理等众多企业级应用技术，并以海纳百川的胸怀整合了开源世界里众多的企业级应用技术，逐渐成为使用最多的Java EE企业应用开发框架。</p>
+<h3 id="1、IoC概述"><a href="#1、IoC概述" class="headerlink" title="1、IoC概述"></a>1、IoC概述</h3><h4 id="1-1-IoC的概念"><a href="#1-1-IoC的概念" class="headerlink" title="1.1 IoC的概念"></a>1.1 IoC的概念</h4><p>IoC（控制反转：Inverse of Control）是一个重要的面向对象编程理论，Spring核心模块实现了IoC的功能。Spring中的其他模块，像AOP、声明式事务等功能都是建立在IoC的基础之上，它将类和类之间的依赖从代码中脱离出来，用配置的方式进行依赖关系描述，由IoC容器负责依赖类之间的创建、拼接、管理、获取等工作。一般来说IoC的概念有两种表示方式，一个叫控制反转，一个叫依赖注入。由于控制反转并不好理解，业界也曾进行广泛的讨论，最终软件界的泰斗级人物Martin Folwer提出了DI（依赖注入：Dependency Injection）的概念用以代替IoC。</p>
+<blockquote>
+<p>控制反转：对于软件来说，即某一接口具体实现类的选择控制权从调用类中移除，转交给第三方决定。</p>
+<p>依赖注入：调用类对某一接口实现类的依赖关系由第三方（容器或协作类）注入，以移除调用类对某一接口实现类的依赖。</p>
+</blockquote>
+<p>上面两个概念第一次接触的时候，你会发现都不太好理解，那是因为还不清楚IoC的实现机制，随着对IoC了解的深入，你会发现<code>依赖注入</code>的概念直接明了。</p>
+<h4 id="1-2-IoC的类型"><a href="#1-2-IoC的类型" class="headerlink" title="1.2 IoC的类型"></a>1.2 IoC的类型</h4><p>从注入方法上看，主要可以划分为三种类型：构造函数注入、属性注入和接口注入。Spring支持构造函数注入和属性注入。</p>
+<ul>
+<li><strong>构造函数注入</strong>: 在构造函数注入中，我们通过调用类的构造函数，将接口实现类通过构造函数变量传入。</li>
+<li><strong>属性注入</strong>: 属性注入是指通过Setter方法完成调用类所需依赖的注入。</li>
+<li><strong>接口注入</strong>: 将调用类所有依赖注入的方法抽取到一个接口中，调用类通过实现该接口提供相应的注入方法。</li>
+</ul>
+<p>由于通过接口注入需要额外声明一个接口，增加了类的数目，而且它的效果和属性注入并无本质区别，所以不提倡采用这种方式。</p>
+<h3 id="2、IoC的底层实现原理"><a href="#2、IoC的底层实现原理" class="headerlink" title="2、IoC的底层实现原理"></a>2、IoC的底层实现原理</h3><p>Spring的核心模块实现了IoC的功能，它通过配置文件或注解描述类和类之间的依赖关系，自动完成类的初始化和依赖注入的工作。让开发者们从底层实现类的实例化、依赖关系装配等工作中脱离出来，专注于更有意义的业务逻辑开发工作。这种“神奇”的力量归功于Java语言本身的类反射功能。</p>
+<h4 id="2-1-Java反射知识"><a href="#2-1-Java反射知识" class="headerlink" title="2.1 Java反射知识"></a>2.1 Java反射知识</h4><p>Java语言允许通过程序化的方式间接对Class的对象实例操作，Class文件由类装载器装载后，在JVM中将形成一份描述CLass结构的元信息对象，通过该元信息对象可以获知Class的结构信息：如构造函数、属性和方法等。Java允许用户借由这个Class相关的元信息对象间接调用Class对象的功能，这就为使用程序化方式操作Class对象开辟了途径。下面先看一个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String brand;</div><div class="line">    <span class="keyword">private</span> String color;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> maxSpeed;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Car</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Car</span><span class="params">(String brand, String color, <span class="keyword">int</span> maxSpeed)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.brand = brand;</div><div class="line">        <span class="keyword">this</span>.color = color;</div><div class="line">        <span class="keyword">this</span>.maxSpeed = maxSpeed;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">introduce</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"brand:"</span> + brand + <span class="string">";color:"</span> + color + <span class="string">";maxSpeed:"</span> + maxSpeed);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 省略参数的getter/Setter方法</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReflectTest</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Car <span class="title">initByDefaultConst</span><span class="params">()</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">        <span class="comment">// 通过类装载器获取Car类对象</span></div><div class="line">        ClassLoader loader = Thread.currentThread().getContextClassLoader();</div><div class="line">        Class&lt;?&gt; clazz = loader.loadClass(<span class="string">"com.hhxs.bbt.web.Car"</span>);</div><div class="line">        <span class="comment">// 获取类的默认构造器对象并通过它实例化Car</span></div><div class="line">        Constructor&lt;?&gt; cons = clazz.getDeclaredConstructor((Class[]) <span class="keyword">null</span>);</div><div class="line">        Car car = (Car) cons.newInstance();</div><div class="line">        <span class="comment">// 通过反射方法设置属性</span></div><div class="line">        Method setBrand = clazz.getMethod(<span class="string">"setBrand"</span>, String.class);</div><div class="line">        setBrand.invoke(car, <span class="string">"红旗CA72"</span>);</div><div class="line">        Method setColor = clazz.getMethod(<span class="string">"setColor"</span>, String.class);</div><div class="line">        setColor.invoke(car, <span class="string">"黑色"</span>);</div><div class="line">        Method setMaxSpeed = clazz.getMethod(<span class="string">"setMaxSpeed"</span>, <span class="keyword">int</span>.class);</div><div class="line">        setMaxSpeed.invoke(car, <span class="number">200</span>);</div><div class="line">        <span class="keyword">return</span> car;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">        Car car1 = initByDefaultConst();</div><div class="line">        car1.introduce();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>通过查看运行结果，可以看到这和直接通过构造函数和方法调用类功能的效果是一致的，只不过前者是间接调用，后者是直接调用罢了。这说明我们完全可以通过编程方式调用Class的各项功能。如果我们将这些信息以一个配置文件的方式提供，就可以使用Java语言的反射功能编写一段通用代码对类似于Car的类进行实例化及功能调用操作了。有没有感觉这段描述和Spring框架的实现机制很相似，Spring正是基于Java语言自带的反射机制实现了IoC的功能。</p>
+<p>下面简要介绍下上述例子用到得三个主要反射类，这些反射对象类在<strong>java.reflect</strong>包中定义。</p>
+<ul>
+<li><strong>Constructor</strong>: 类的构造函数反射类，通过Class#getConstructors()方法可以获得类的所有构造函数反射对象数组。Constructor的一个主要方法是newInstance(Object[]… initargs),通过该方法可以创建一个对象类的实例，相当<code>new</code>关键字。</li>
+<li><strong>Method</strong>:  类方法的放射类，通过Class#getDeclaredMethods()方法可以获取类的所有方法发射类对象数组Method[]。Method最主要的方法是invoke(Object obj, Objcet… args),obj表示操作的目标对象，args为方法入参。</li>
+<li><strong>Field</strong>: 类的成员变量反射类，通过Class#getDeclaredFields()方法可以获取类的成员变量反射对象数组。Filed类最主要的方法是set(Object obj, Object value)，obj表示操作的目标对象，通过value为目标类对象的成员变量设置值。</li>
+</ul>
+<p>此外，Java还为包提供了Package反射类，在JDK5.0中还未注解提供了AnnotatedElement反射类。总之，Java的反射体系保证了可以通过程序化的方式访问目标类中的所有元素，对于private或protected的成员变量和方法，只要JVM的安全机制允许，也可以通过反射进行调用<code>setAccessible(boolean access)</code>。</p>
+<h3 id="3、三个核心接口"><a href="#3、三个核心接口" class="headerlink" title="3、三个核心接口"></a>3、三个核心接口</h3><p>Spring通过一个配置文件描述Bean及Bean之间的依赖关系，利用Java语言的反射功能实例化Bean并建立Bean之间的依赖关系。Spring的IoC容器在完成这些底层工作的基础上，还提供了Bean实例缓存、声明周期管理、Bean实例代理、事件发布、资源装载等高级服务。</p>
+<h4 id="3-1-BeanFactory"><a href="#3-1-BeanFactory" class="headerlink" title="3.1 BeanFactory"></a>3.1 BeanFactory</h4><p>Bean工厂(com.springframework.beans.factory.BeanFactory)是Spring框架最核心的接口，它提供了高级IoC的配置机制。BeanFactory使管理不同不同类型的Java对象成为可能，一般称BeanFactory为IoC容器。BeanFactory是类的通用工厂，它可以创建并管理各种类的对象，Spring称这些被创建和管理的Java对象为Bean。Bean最主要的方法就是<code>getBean(String beanName)</code>，该方法从容器中返回特定名称的Bean。下面看一个小例子:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// spring文件</span></div><div class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span> ?&gt;</div><div class="line">&lt;beans xmlns=<span class="string">"http://www.springframework.org/schema/beans"</span></div><div class="line">	xmlns:xsi=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span> xmlns:p=<span class="string">"http://www.springframework.org/schema/p"</span></div><div class="line">	xsi:schemaLocation=<span class="string">"http://www.springframework.org/schema/beans</span></div><div class="line"><span class="string">       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"</span>&gt;</div><div class="line">	&lt;bean id=<span class="string">"car"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"com.hhxs.bbt.web.Car"</span></div><div class="line">		p:brand=<span class="string">"红旗CA72"</span></div><div class="line">		p:color=<span class="string">"黑色"</span></div><div class="line">		p:maxSpeed=<span class="string">"200"</span> /&gt;</div><div class="line">&lt;/beans&gt;</div><div class="line"></div><div class="line"><span class="comment">// JAVA代码</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BeanFactoryTest</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Throwable</span>&#123;</div><div class="line">	   ResourcePatternResolver resolver = <span class="keyword">new</span> PathMatchingResourcePatternResolver();</div><div class="line">	   Resource res = resolver.getResource(<span class="string">"classpath:spring/beans.xml"</span>);</div><div class="line">	   System.out.println(res.getURL());</div><div class="line">       BeanFactory bf = <span class="keyword">new</span> XmlBeanFactory(res);</div><div class="line">       System.out.println(<span class="string">"init BeanFactory."</span>);</div><div class="line"></div><div class="line">       Car car = bf.getBean(<span class="string">"car"</span>,Car.class);</div><div class="line">       System.out.println(<span class="string">"car bean is ready for use!"</span>);</div><div class="line">       car.introduce();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>注意：</strong> <em>通过BeanFactory启动IoC容器时，并不会初始化配置文件中定义的Bean，初始化动作发生在第一个调用时。对于单实例的Bean来说，BeanFactory会缓存Bean实例，所以第二次使用getBean()获取Bean时将直接从IoC容器的缓存中获取Bean实例。Spring在DefaultSingletonBeanRegistry类中提供了一个用于缓存单实例Bean的缓存器，它是一个用HashMap实现的缓存器，单实例的Bean以beanName为键保存在这个HashMap中。</em></p>
+<h4 id="3-2-ApplicationContext"><a href="#3-2-ApplicationContext" class="headerlink" title="3.2 ApplicationContext"></a>3.2 ApplicationContext</h4><p>应用上下文(com.springframework.context.ApplicationContext)建立在BeanFactory基础之上，提供了更多面向应用的功能，它提供了国际化支持和框架事件体系，更易于创建实际应用。一般称ApplicationContext为应用上下文或者Spring容器。</p>
+<p>ApplicationContext的主要实现类是ClassPathXmlApplicationContext和FileSystemXmlApplicationContext，前者默认从类路径中加载配置文件，后者默认从文件系统中装载配置文件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"spring/beans.xml"</span>);    </div><div class="line"><span class="comment">//或者</span></div><div class="line">ApplicationContext ctx = <span class="keyword">new</span> FileSystemXmlApplicationContext(<span class="string">"spring/beans.xml"</span>);</div></pre></td></tr></table></figure>
+<p>在获取ApplicationContext实例后，就可以像BeanFactory一样调用getBean(beanName)返回Bean了。<strong>需要注意的是</strong>：<em>ApplicationContext在初始化应用上下文时就实例化所有单实例的Bean。</em>因此，相比BeanFactory，初始化时间也会相对较长些，不过之后的调用就不在有”第一次惩罚”的问题。</p>
+<h4 id="3-3-WebApplicationContext"><a href="#3-3-WebApplicationContext" class="headerlink" title="3.3 WebApplicationContext"></a>3.3 WebApplicationContext</h4><p>WebApplicationContext是专门为Web应用准备的，它允许应用从相对于Web根目录的路径中装载配置文件完成初始化工作。从WebApplicationContext中可以获得ServletContext的引用，整个Web应用上下文对象将作为属性放置到ServletContext中，以便Web应用环境可以访问Spring应用上下文。<br><img src="/image/201710/Spring和Web应用的上下文融合.png" alt="&quot;图片Spring和Web应用的上下文融合&quot;"></p>
+<p>WebApplicationContext的初始化方式和BeanFactory、ApplicationContext有所区别，因为WebApplicationContext需要ServletContext实例，也就是说它必须在拥有Web容器的前提下才能完成启动的工作。有过Web开发经验的读者都知道可以在web.xml中配置自启动的Servlet(spring3.0及以后版本中已经删除)或定义Web容器监听器（ServletContextListener），借助这两者中的任何一个都可以完成启动Spring Web应用上下文的工作。<br><strong>通过web容器监听器启动：</strong><code>web.xml</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&lt;context-param&gt;</div><div class="line">  &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;</div><div class="line">  &lt;param-value&gt;</div><div class="line">    classpath:/spring/spring-context.xml</div><div class="line">  &lt;/param-value&gt;</div><div class="line">&lt;/context-param&gt;</div><div class="line"></div><div class="line">&lt;!-- spring容器启动监听器 --&gt;</div><div class="line">&lt;listener&gt;</div><div class="line">  &lt;listener-<span class="class"><span class="keyword">class</span>&gt;<span class="title">org</span>.<span class="title">springframework</span>.<span class="title">web</span>.<span class="title">context</span>.<span class="title">ContextLoaderListener</span>&lt;/<span class="title">listener</span>-<span class="title">class</span>&gt;</span></div><div class="line"><span class="class">&lt;/<span class="title">listener</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="4、Bean的生命周期"><a href="#4、Bean的生命周期" class="headerlink" title="4、Bean的生命周期"></a>4、Bean的生命周期</h3><h4 id="4-1-BeanFactory中Bean的生命周期"><a href="#4-1-BeanFactory中Bean的生命周期" class="headerlink" title="4.1 BeanFactory中Bean的生命周期"></a>4.1 BeanFactory中Bean的生命周期</h4><p>我们知道Web容器中的Servlet拥有明确的生命周期，Spring容器中的Bean也拥有相似的生命周期。我们可以从两个层面定义Bean的生命周期：第一个层面是Bean的作用范围；第二个层面是实例化Bean时所经历的一系列阶段。<br><img src="/image/201710/BeanFactory中Bean的生命周期.png" alt="&quot;BeanFactory中Bean的生命周期&quot;"></p>
+<ol>
+<li>当调用者通过getBean(beanName)向容器请求某一个Bean时，如果容器注册了org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor接口，在实例化Bean之前，将调用接口的postProcessBeforeInstantiation()方法;</li>
+<li>根据配置情况调用Bean构造函数或工厂方法实例化Bean；</li>
+<li>如果容器注册了InstantiationAwareBeanPostProcessor接口，在实例化Bean之后，调用该接口的postProcessAfterInstantiationn()方法，可以在这里对已经实例化的对象进行处理。</li>
+<li>如果Bean配置了属性信息，容器在这一步着手将配置值设置到Bean对应的属性中，不过在设置每个属性值之前先调用InstantiationAwareBeanPostProcessor接口的postProcessPropertyValues()方法；</li>
+<li>调用Bean的属性设置方法设置属性值；</li>
+<li>如果Bean实现了org.springframework.beans.factory.BeanNameAware接口，将调用setBeanName()接口方法，将配置文件中该Bean对应的名称设置到Bean中；</li>
+<li>如果Bean实现了org.springframework.bean.factory.BeanFactoryAware接口，将调用setBeanFactory()接口方法，将BeanFactory容器实例设置到Bean中；</li>
+<li>如果BeanFactory装配了org.springframework.beans.factory.config.BeanPostProcessor后处理器，将调用BeanPostProcessor的<code>Object postProcessBeforeInstantiation(Object bean, Stringn beanName)</code>接口方法对Bean进行加工操作。其中入参bean是当前正在处理的Bean，而beanName是当前Bean的配置名，返回的对象为加工处理后的Bean。<strong>BeanPostProcessor在Spring框架中占有重要的地位，为容器提供duiBean进行后续架构处理的切入点，Spring容器所提供的各种“神奇功能”（如AOP，动态代理等）都通过BeanPostProcessor实施</strong>；</li>
+<li>如果Bean实现了InitializingBean的接口，将调用该接口的afterPropertiesSet()方法；</li>
+<li>如果在<bean>通过init-method属性定义了初始化方法，将执行这个方法；</bean></li>
+<li>BeanPostProcessor后处理定义了两个方法：其一时postProcessBeforeInstantiation()在第8步调用；其二是Object postProcessAfterInstantiationn(Object bean, String beanName)方法，这个方法在此时调用，容器中再次获得对Bean进行加工处理的机会。</li>
+<li>如果在<bean>中指定Bean的作用范围是scope=”prototype”，将Bean返回给调用者，调用者负责Bean后续生命的管理，Spring不再管理这个Bean的生命周期。如果作用范围设置为scope=“singleton”，则将Bean放入到Spring IoC容器的缓存池中，并将Bean引用返回给调用者，Spring继续对这些Bean进行后续的生命管理。</bean></li>
+<li>对于scope=“singleton”的Bean，当容器关闭时，将触发Spring对Bean的后续生命周期的管理工作，首先如果Bean实现了DisposableBean接口，则将调用接口的afterPropertiesSet()方法，可以在此编写释放资源、记录日志等操作。</li>
+<li>对于scope=“singleton”的Bean，如果通过<bean>的destroy-method属性指定了Bean的销毁方法，Spring将执行Bean的这个方法，完成Bean资源的释放等操作。</bean></li>
+</ol>
+<p><strong>Bean生命周期实例：</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span> <span class="keyword">implements</span> <span class="title">BeanFactoryAware</span>, <span class="title">BeanNameAware</span>, <span class="title">InitializingBean</span>, <span class="title">DisposableBean</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String brand;</div><div class="line">    <span class="keyword">private</span> String color;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> maxSpeed;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> BeanFactory beanFactory;</div><div class="line">    <span class="keyword">private</span> String beanName;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Car</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"调用Car()构造函数。"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Car</span><span class="params">(String brand, String color, <span class="keyword">int</span> maxSpeed)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.brand = brand;</div><div class="line">        <span class="keyword">this</span>.color = color;</div><div class="line">        <span class="keyword">this</span>.maxSpeed = maxSpeed;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">introduce</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"brand:"</span> + brand + <span class="string">";color:"</span> + color + <span class="string">";maxSpeed:"</span> + maxSpeed);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getBrand</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> brand;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBrand</span><span class="params">(String brand)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"调用setBrand()设置属性。"</span>);</div><div class="line">        <span class="keyword">this</span>.brand = brand;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getColor</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> color;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setColor</span><span class="params">(String color)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.color = color;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMaxSpeed</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> maxSpeed;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMaxSpeed</span><span class="params">(<span class="keyword">int</span> maxSpeed)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.maxSpeed = maxSpeed;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 5 DisposableBean方法</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        System.out.println(<span class="string">"调用DisposaleBean.destroy()。"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 4 IntializingBean接口方法</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterPropertiesSet</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        System.out.println(<span class="string">"调用IntializingBean.afterPropertiesSet()。"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 3 BeanNameAware接口方法</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBeanName</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"调用BeanNameAware.setBeanName()。"</span>);</div><div class="line">        <span class="keyword">this</span>.beanName = beanName;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 2 BeanFactoryAware接口方法</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBeanFactory</span><span class="params">(BeanFactory beanFactory)</span> <span class="keyword">throws</span> BeansException </span>&#123;</div><div class="line">        System.out.println(<span class="string">"调用BeanFactoryAware.setBeanFactory()。"</span>);</div><div class="line">        <span class="keyword">this</span>.beanFactory = beanFactory;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 6 通过&lt;bean&gt;的init-method属性指定的初始化方法</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">myInit</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"调用init-method所指定的myInit()，将maxSpeed设置为240。"</span>);</div><div class="line">        <span class="keyword">this</span>.maxSpeed = <span class="number">240</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 7 通过&lt;bean&gt;的destroy-method属性指定的销毁方法</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">myDestroy</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"调用destroy-method所指定的myDestroy()。"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyInstantiationAwareBeanPostProcessor</span> <span class="keyword">extends</span> <span class="title">InstantiationAwareBeanPostProcessorAdapter</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 1 在实例化Bean前进行调用</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">postProcessBeforeInitialization</span><span class="params">(Class beanClass, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</div><div class="line">        <span class="comment">// 1-1 仅对容器中Car Bean进行处理</span></div><div class="line">        <span class="keyword">if</span> (<span class="string">"car"</span>.equals(beanName)) &#123;</div><div class="line">            System.out.println(<span class="string">"InstantiationAware BeanPostProcessor.postProcessBeforeInstantiation"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 2 在实例化Bean后调用</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">postProcessAfterInstantiation</span><span class="params">(Object bean, String beanName)</span> </span>&#123;</div><div class="line">        <span class="comment">// 2-1 仅对容器中Car Bean进行处理</span></div><div class="line">        <span class="keyword">if</span> (<span class="string">"car"</span>.equals(beanName)) &#123;</div><div class="line">            System.out.println(<span class="string">"InstantiationAware BeanPostProcessor.postProcessAfterInstantiation"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 3 在设置某个属性时调用</span></div><div class="line">    <span class="function"><span class="keyword">public</span> PropertyValues <span class="title">postProcessPropertyValues</span><span class="params">(PropertyValues pvs, PropertyDescriptor[] pds, Object bean,</span></span></div><div class="line"><span class="function"><span class="params">            String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</div><div class="line">        <span class="comment">// 3-1 仅对容器中Car Bean进行处理,还可以通过pdst入参进行过滤，仅对car的某个特定属性时进行处理</span></div><div class="line">        <span class="keyword">if</span>(<span class="string">"car"</span>.equals(beanName)) &#123;</div><div class="line">            System.out.println(<span class="string">"InstantiationAware AwareBeanPostProcessor.postProcessPropertyValues"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> pvs;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyBeanPostProcessor</span> <span class="keyword">implements</span> <span class="title">BeanPostProcessor</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</div><div class="line"></div><div class="line">        <span class="keyword">if</span>(beanName.equals(<span class="string">"car"</span>)) &#123;</div><div class="line">            Car car = (Car)bean;</div><div class="line">            <span class="keyword">if</span>(car.getColor() == <span class="keyword">null</span>) &#123;</div><div class="line">                System.out.println(<span class="string">"调用BeanPostProcessor.postProcessBeforeInitialization(),color为空，设置为默认黑色。"</span>);</div><div class="line">                car.setColor(<span class="string">"黑色"</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> bean;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">postProcessAfterInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</div><div class="line">        <span class="keyword">if</span>(beanName.equals(<span class="string">"car"</span>)) &#123;</div><div class="line">            Car car = (Car)bean;</div><div class="line">            <span class="keyword">if</span>(car.getMaxSpeed() &gt;= <span class="number">200</span>) &#123;</div><div class="line">                System.out.println(<span class="string">"调用BeanPostProcessor.postProcess AfterInitialization(), 将maxSpeed调整为200。"</span>);</div><div class="line">                car.setMaxSpeed(<span class="number">200</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> bean;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">**beans.xml**</div><div class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span> ?&gt;</div><div class="line">&lt;beans xmlns=<span class="string">"http://www.springframework.org/schema/beans"</span></div><div class="line">	xmlns:xsi=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span> xmlns:p=<span class="string">"http://www.springframework.org/schema/p"</span></div><div class="line">	xsi:schemaLocation=<span class="string">"http://www.springframework.org/schema/beans</span></div><div class="line"><span class="string">       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"</span>&gt;</div><div class="line">	&lt;bean id=<span class="string">"car"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"com.iflytek.bbt.web.Car"</span></div><div class="line">		init-method=<span class="string">"myInit"</span></div><div class="line">		destroy-method=<span class="string">"myDestroy"</span></div><div class="line">		p:brand=<span class="string">"红旗CA72"</span></div><div class="line">		p:maxSpeed=<span class="string">"200"</span></div><div class="line">		scope=<span class="string">"singleton"</span> /&gt;</div><div class="line">&lt;/beans&gt;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BeanLifeCycle</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">lifeCycleInBeanFactory</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">        Resource res = <span class="keyword">new</span> ClassPathResource(<span class="string">"spring/beans.xml"</span>);</div><div class="line">        BeanFactory bf = <span class="keyword">new</span> XmlBeanFactory(res);</div><div class="line"></div><div class="line">        <span class="comment">// 向容器中注册后处理器</span></div><div class="line">        ((ConfigurableBeanFactory)bf).addBeanPostProcessor(<span class="keyword">new</span> MyBeanPostProcessor());</div><div class="line">        ((ConfigurableBeanFactory)bf).addBeanPostProcessor(<span class="keyword">new</span> MyInstantiationAwareBeanPostProcessor());</div><div class="line"></div><div class="line">        <span class="comment">// 第一次从容器中获取Car，将触发容器实例化该Bean,这将引发Bean生命周期方法的调用。</span></div><div class="line">        Car car1 = (Car)bf.getBean(<span class="string">"car"</span>);</div><div class="line">        car1.introduce();</div><div class="line">        car1.setColor(<span class="string">"红色"</span>);</div><div class="line">        car1.introduce();</div><div class="line"></div><div class="line">        <span class="comment">// 第二次从容器中获取Car，直接从缓存池中获取</span></div><div class="line">        Car car2 = (Car)bf.getBean(<span class="string">"car"</span>);</div><div class="line"></div><div class="line">        <span class="comment">// 查看car1和car2是否指向同一引用</span></div><div class="line">        System.out.println(<span class="string">"car1==car2:"</span> + (car1==car2));</div><div class="line"></div><div class="line">        <span class="comment">// 关闭容器</span></div><div class="line">        ((XmlBeanFactory)bf).destroySingletons();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        lifeCycleInBeanFactory();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>运行上述代码，我们在控制台上得到以下输出信息，仔细观察，将发现它验证了我们前面所介绍的Bean生命周期过程。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">调用Car()构造函数。</div><div class="line">InstantiationAware BeanPostProcessor.postProcessAfterInstantiation</div><div class="line">InstantiationAware AwareBeanPostProcessor.postProcessPropertyValues</div><div class="line">调用setBrand()设置属性。</div><div class="line">调用BeanNameAware.setBeanName()。</div><div class="line">调用BeanFactoryAware.setBeanFactory()。</div><div class="line">调用BeanPostProcessor.postProcessBeforeInitialization(),color为空，设置为默认黑色。</div><div class="line">调用IntializingBean.afterPropertiesSet()。</div><div class="line">调用init-method所指定的myInit()，将maxSpeed设置为<span class="number">240</span>。</div><div class="line">调用BeanPostProcessor.<span class="function">postProcess <span class="title">AfterInitialization</span><span class="params">()</span>, 将maxSpeed调整为200。</span></div><div class="line"><span class="function">brand:红旗CA72</span>;color:黑色;maxSpeed:<span class="number">200</span></div><div class="line">brand:红旗CA72;color:红色;maxSpeed:<span class="number">200</span></div><div class="line">car1==car2:<span class="keyword">true</span></div><div class="line">调用DisposaleBean.destroy()。</div><div class="line">调用destroy-method所指定的myDestroy()。</div></pre></td></tr></table></figure></p>
+<h4 id="4-2-ApplicationContext中Bean的生命周期"><a href="#4-2-ApplicationContext中Bean的生命周期" class="headerlink" title="4.2 ApplicationContext中Bean的生命周期"></a>4.2 ApplicationContext中Bean的生命周期</h4><p>Bean在应用上下文中的生命周期和BeanFactory中生命周期类似，不同的是，如果Bean实现org.springframework.context.ApplicationContextAware接口，会增加一个调用该接口方法setApplicationContext()的步骤。<br><img src="/image/201710/ApplicationContext中Bean的生命周期.png" alt="&quot;ApplicationContext中Bean的生命周期&quot;"></p>
+<p>此外，如果配置文件中声明了工作后处理器接口BeanFactoryPostProcessor的实现类，则应用上下文在装载配置文件之后初始化Bean实例之前将调用这些BeanFactoryPostProcessor对配置信息进行加工处理。工厂后处理器是容器级的，仅在应用上下文初始化时调用一次，其目的是完成一些配置文件的加工处理工作。</p>
+<p>ApplicationContext和BeanFactory另一<strong>最大的不同之处</strong>在于：前者会利用Java反射机制自动识别出配置文件中定义的BeanPostProcessor、InstantiationAwareBeanPostProcessor和BeanFactoryPostProcessor，并自动将它们注册到应用上下文中；而后者需要在代码中拿你给通过手工调用addBeanPostProcessor()方法进行注册。这也是为什么在应用开发室，我们普遍使用ApplicationContext而很少使用BeanFactory的原因之一。</p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Spring/" rel="tag"><i class="fa fa-tag"></i> Spring</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/19/Activiti工作流学习2/" rel="next" title="Activiti工作流之项目中的使用">
+                <i class="fa fa-chevron-left"></i> Activiti工作流之项目中的使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTQyOC83OTky"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="/images/touxiang.png"
+              alt="zqhao" />
+          
+            <p class="site-author-name" itemprop="name">zqhao</p>
+            <p class="site-description motion-element" itemprop="description">最好的期待，是我相信你。</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zqhao" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>GitHub</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2072589562/profile" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>微博</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/c9692c44b55e" target="_blank" title="简书">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>简书</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:hzqiangmac@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/hzygcs" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、IoC概述"><span class="nav-number">1.</span> <span class="nav-text">1、IoC概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-IoC的概念"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 IoC的概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-IoC的类型"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 IoC的类型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、IoC的底层实现原理"><span class="nav-number">2.</span> <span class="nav-text">2、IoC的底层实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-Java反射知识"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Java反射知识</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、三个核心接口"><span class="nav-number">3.</span> <span class="nav-text">3、三个核心接口</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-BeanFactory"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 BeanFactory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-ApplicationContext"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 ApplicationContext</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-WebApplicationContext"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 WebApplicationContext</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、Bean的生命周期"><span class="nav-number">4.</span> <span class="nav-text">4、Bean的生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-BeanFactory中Bean的生命周期"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 BeanFactory中Bean的生命周期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-ApplicationContext中Bean的生命周期"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 ApplicationContext中Bean的生命周期</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqhao</span>
+
+  
+</div>
+
+
+
+
+  <div class="theme-info">YIRU'S HOME</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="powered-by">
+    <i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  访客数:<span id="busuanzi_value_site_uv"></span></span>
+  </div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="powered-by">
+    <i class="fa fa-read-md"></i><span id="busuanzi_container_site_pv">
+  访问量:<span id="busuanzi_value_site_pv"></span></span>
+  </div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("01AlEf5rUjIHVKeg3JV5or4z-gzGzoHsz", "lVeILtSiskvjNRJGtLhqspM0");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

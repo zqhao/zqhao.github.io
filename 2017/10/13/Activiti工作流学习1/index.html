@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Activiti," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="自我驱动力的来源是刚需。  前段时间从另外一个团队手里接过来一个半成品项目，是一个工作流系统。半成品就算了，还要快速完成工作任务，说多了都是泪，算是接了一个大锅。为了快速上手Activiti工作流的使用，基本上是边学习变实践，因此整个项目做下来对工作流知识依然处于比较散乱的阶段，趁着项目暂时告一段落把知识梳理下。言归正传，下面进入正题：">
+<meta name="keywords" content="Activiti">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Activiti工作流之基础概念介绍">
+<meta property="og:url" content="http://yoursite.com/2017/10/13/Activiti工作流学习1/index.html">
+<meta property="og:site_name" content="功不唐捐">
+<meta property="og:description" content="自我驱动力的来源是刚需。  前段时间从另外一个团队手里接过来一个半成品项目，是一个工作流系统。半成品就算了，还要快速完成工作任务，说多了都是泪，算是接了一个大锅。为了快速上手Activiti工作流的使用，基本上是边学习变实践，因此整个项目做下来对工作流知识依然处于比较散乱的阶段，趁着项目暂时告一段落把知识梳理下。言归正传，下面进入正题：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/image/201710/activiti_api.png">
+<meta property="og:image" content="http://yoursite.com/image/201710/Activiti配置.png">
+<meta property="og:updated_time" content="2017-10-24T08:04:23.500Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Activiti工作流之基础概念介绍">
+<meta name="twitter:description" content="自我驱动力的来源是刚需。  前段时间从另外一个团队手里接过来一个半成品项目，是一个工作流系统。半成品就算了，还要快速完成工作任务，说多了都是泪，算是接了一个大锅。为了快速上手Activiti工作流的使用，基本上是边学习变实践，因此整个项目做下来对工作流知识依然处于比较散乱的阶段，趁着项目暂时告一段落把知识梳理下。言归正传，下面进入正题：">
+<meta name="twitter:image" content="http://yoursite.com/image/201710/activiti_api.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/10/13/Activiti工作流学习1/"/>
+
+
+
+
+
+  <title>Activiti工作流之基础概念介绍 | 功不唐捐</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">功不唐捐</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">耐心专注</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/13/Activiti工作流学习1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zqhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/touxiang.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="功不唐捐">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Activiti工作流之基础概念介绍</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-13T10:48:10+08:00">
+                2017-10-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Activiti工作流/" itemprop="url" rel="index">
+                    <span itemprop="name">Activiti工作流</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/10/13/Activiti工作流学习1/" class="leancloud_visitors" data-flag-title="Activiti工作流之基础概念介绍">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,493 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  10 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>自我驱动力的来源是刚需。</p>
+</blockquote>
+<p>前段时间从另外一个团队手里接过来一个半成品项目，是一个工作流系统。半成品就算了，还要快速完成工作任务，说多了都是泪，算是接了一个大锅。为了快速上手Activiti工作流的使用，基本上是边学习变实践，因此整个项目做下来对工作流知识依然处于比较散乱的阶段，趁着项目暂时告一段落把知识梳理下。言归正传，下面进入正题：</p>
+<a id="more"></a>
+<h3 id="1、基本概念"><a href="#1、基本概念" class="headerlink" title="1、基本概念"></a>1、基本概念</h3><ul>
+<li>工作流：业务过程的部分或整体在计算机应用环境下的自动化</li>
+<li>工作流管理系统：工作流的定义和管理，按照在系统中预定义好的工作流规则进行工作流实例的执行。</li>
+<li>工作流管理系统的目标：管理工作流程以确保工作在正确的时间被期望的人员执行–在自动化进行的业务过程中插入人工的执行和干预。</li>
+</ul>
+<p><strong>Activiy是什么</strong></p>
+<p>Activiti是一个针对企业用户、开发人员、系统管理员的轻量级工作流业务管理平台，其核心是使用Java开发的快速、稳定的BPMN2.0流程引擎。</p>
+<p><strong>Activiti的特点</strong></p>
+<ul>
+<li>数据持久化，底层使用MyBatis</li>
+<li>引擎Service接口</li>
+<li>流程设计器</li>
+<li>原生支持Spring</li>
+<li>分离运行时与历史数据</li>
+</ul>
+<h3 id="2、核心表介绍"><a href="#2、核心表介绍" class="headerlink" title="2、核心表介绍"></a>2、核心表介绍</h3><h4 id="2-1-理解数据库表的命名"><a href="#2-1-理解数据库表的命名" class="headerlink" title="2.1 理解数据库表的命名"></a>2.1 理解数据库表的命名</h4><p>Activiti的表都以ACT_开头。第二部分表示表的用途的两个字母标识。用途也和服务的API对应。</p>
+<ul>
+<li>ACT<em>RE</em>*:’RE’表示repository。这个前缀的表包含了流程定义和流程静态资源（图片、规则，等等）</li>
+<li>ACT<em>RU</em>*: ‘RU’表示rutime。这些运行时的表，包含流程实例、任务、变量、异步任务，等运行中的数据。Activiti只在流程实例执行过程中保存这些数据，在流程结束时就会删除这些记录。这样可以保证运行时表可以一直很小且速度很快。</li>
+<li>ACT<em>ID</em>*’ID’表示identity。这些表包含身份信息，比如用户，组等等。</li>
+<li>ACT<em>HI</em>*:’HI’表示history。这些表包含历史数据，比如历史流程实例、变量、任务等等。</li>
+<li>ACT<em>GE</em>*: 通用数据，用于不同场景下。</li>
+</ul>
+<h4 id="2-2-表用途介绍"><a href="#2-2-表用途介绍" class="headerlink" title="2.2 表用途介绍"></a>2.2 表用途介绍</h4><p><em><strong>通用数据表:</strong></em></p>
+<p>ACT_GE_BYTEARRAY: 存储部署流程的二进制数据，一个流程包括一个工作流信息和一张对应的工作流图片。<br>ACT_GE_PROPERTY: 存储整个流程引擎级别的数据，用于部署流程时获取新的版本号，初始化表结构时，会默认插入三条记录</p>
+<p><em><strong>历史数据库表:</strong></em></p>
+<p>ACT_HI_ACTINST: 存储历史活动节点数据<br>ACT_HI_ATTACHMENT: 存储历史附件数据<br>ACT_HI_COMMENT: 存储历史评论数据或者事件数据<br>ACT_HI_DETAIL: 存储历史流程变量详情信息<br>ACT_HI_IDENTITYLINK: 存储历史流程人员操作信息<br>ACT_HI_PROCINST: 存储历史流程实例信息<br>ACT_HI_TASKINST: 存储历史任务实例信息<br>ACT_HI_VARINST: 存储历史流程变量信息</p>
+<p><em><strong>用户组织表:</strong></em></p>
+<p>ACT_ID_GROUP: 存储用户组信息<br>ACT_ID_INFO: 存储用户扩展信息<br>ACT_ID_MEMBERSHIP: 存储用户与用户组队形信息<br>ACT_ID_USER: 存储用户信息</p>
+<p><em><strong>工作流流程规则表:</strong></em></p>
+<p>ACT_RE_DEPLOYMENT: 存储工作流部署信息，比如工作流名称等<br>ACT_RE_MODEL: 存储流程设计模型信息<br>ACT_RE_PROCDEF: 存储流程定义数据</p>
+<p><strong><em>运行时数据表:</em></strong></p>
+<p>ACT_RU_EVENT_SUBSCR: 如果流程到达某个事件节点，Activiti会往该表中加入事件描述数据，这些事件描述数据将会决定流程事件的触发。<br>ACT_RU_EXECUTION: 存储运行时流程执行实例信息<br>ACT_RU_IDENTITYLINK: 存储运行时流程人员操作信息，主要存储任务节点与参与者的相关信息<br>ACT_RU_JOB: 存储运行时定时任务信息<br>ACT_RU_TASK: 存储运行时任务节点信息<br>ACT_RU_VARIABLE: 存储运行时流程变量信息</p>
+<p><strong><em>其他:</em></strong></p>
+<p>CT_EVT_LOG: 存储事件日志信息<br>ACT_PROCDEF_INFO: 存储流程定义的动态变更信息</p>
+<h3 id="3、核心概念介绍"><a href="#3、核心概念介绍" class="headerlink" title="3、核心概念介绍"></a>3、核心概念介绍</h3><h4 id="3-1-核心API"><a href="#3-1-核心API" class="headerlink" title="3.1 核心API"></a>3.1 核心API</h4><ul>
+<li>ProcessEngine: 在Activiti中最核心的类</li>
+<li>ProcessDefinition: 流程定义类。可以从这里获得资源文件等。</li>
+<li>ProcessInstance: 代表流程定义的执行实例，一个流程实例包括了所有的运行节点。我们可以利用这个对象来了解当前流程实例的进度<br>等信息，一个流程实例就表示一个流程从刚开始到结束的最大流程分支，即一个流程中流程实例只有一个。</li>
+<li><p>Execution: Activiti用这个对象去描述流程执行的每一个节点。在没有并发的条件下，Execution就是同ProcessInstance。流程按照流程定义的规则执行一次的过程，就可以表示执行对象Execution。</p>
+<ul>
+<li><em>一个流程中，执行对象可以存在多个，但是流程实例只能有一个。</em></li>
+<li><em>当流程按照规则只执行一次的时候，那么流程实例就是执行对象。</em></li>
+</ul>
+</li>
+<li><p>Task: 执行到某任务环节时生成的任务信息。 由于数据库中保存着历史信息以及正在运行的流程实例信息，在实际项目中对已完成任务的查看频率远不及对代办和可接任务的查看，所以在activiti采用分开管理，把正在运行的交给RuntimeService、TaskService管理，而历史数据交给HistoryService来管理。</p>
+</li>
+<li>流程变量: 在流程执行或者任务执行的过程中，用于设置和获取变量，使用流程变量在流程传递的过程中传递业务参数。</li>
+</ul>
+<p><img src="/image/201710/activiti_api.png" alt="&quot;Activiti api&quot;"></p>
+<h4 id="3-2-七大Service接口"><a href="#3-2-七大Service接口" class="headerlink" title="3.2 七大Service接口"></a>3.2 七大Service接口</h4><ul>
+<li>RepositoryService: 仓库服务类，管理流程定义。用于管理流程仓库，例如部署、删除、读取流程资源。所谓的仓库指流程定义文档的两个文件：bpmn文件和流程图片。</li>
+<li>IdentifyService: 身份Service，用户管理和查询用户、组之间的关系</li>
+<li>RuntimeService: 流程执行服务类，可以从这个服务类中获取很多关于流程执行相关的信息。</li>
+<li>TaskService: 任务服务类，可以从这个类中获取任务的信息。</li>
+<li>FormService: 表单Servcie，用于读取流程、任务相关的表单数据。</li>
+<li>HistoryService: 查询历史信息的类，在一个流程执行完成后，这个对象为我们提供查询历史信息，例如流程实例、任务、活动、变量、附件。</li>
+<li>ManagementService引擎管理Service，和具体业务无关，主要可以查询引擎配置、数据库、作业等。</li>
+</ul>
+<p><strong>学习知识最好先对基础的概念有个初步的认识，这方便在后续的学习过程中更好的理解这些概念。在对Activiti有了初步的印象后，下面通过在使用的过程中进一步熟悉Activiti工作流。</strong></p>
+<h3 id="4、开始使用"><a href="#4、开始使用" class="headerlink" title="4、开始使用"></a>4、开始使用</h3><p><em>Activiti默认使用自带的H2内存数据库，而实际生产环境中使用Oracle或mysql居多，这里配置为oracle数据库。</em></p>
+<h4 id="4-1-在项目里引入相关jar"><a href="#4-1-在项目里引入相关jar" class="headerlink" title="4.1 在项目里引入相关jar"></a>4.1 在项目里引入相关jar</h4><p>这里将Spring集成包也引入进来了，这是生产环境常用的使用方式。不需要的可以将activiti-spring引用包去掉。<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">   &lt;groupId&gt;org.activiti&lt;/groupId&gt;</div><div class="line">   &lt;artifactId&gt;activiti-engine&lt;/artifactId&gt;</div><div class="line">   &lt;version&gt;5.22.0&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">   &lt;groupId&gt;org.activiti&lt;/groupId&gt;</div><div class="line">   &lt;artifactId&gt;activiti-spring&lt;/artifactId&gt;</div><div class="line">   &lt;version&gt;5.22.0&lt;&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">   &lt;groupId&gt;org.slf4j&lt;/groupId&gt;</div><div class="line">   &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;</div><div class="line">   &lt;version&gt;1.7.6&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
+<h4 id="4-2-安装Activiti数据库"><a href="#4-2-安装Activiti数据库" class="headerlink" title="4.2 安装Activiti数据库"></a>4.2 安装Activiti数据库</h4><p>Activiti框架拥有自动建表功能，在创建流程引擎对象的时候会在数据库中自动创建表。</p>
+<h5 id="4-2-1-不使用配置文件"><a href="#4-2-1-不使用配置文件" class="headerlink" title="4.2.1 不使用配置文件"></a>4.2.1 不使用配置文件</h5><p>测试代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">intiProcessEngine</span><span class="params">()</span> </span>&#123;</div><div class="line">     <span class="comment">// 获取流程引擎</span></div><div class="line">     ProcessEngine processEngine = <span class="keyword">new</span> StandaloneProcessEngineConfiguration()</div><div class="line">               .setJdbcUrl(<span class="string">"jdbc:oracle:thin:@172.16.58.17:1521:orcl"</span>)</div><div class="line">               .setJdbcUsername(<span class="string">"activiti"</span>)</div><div class="line">               .setJdbcPassword(<span class="string">"111111"</span>)</div><div class="line">               .setJdbcDriver(<span class="string">"oracle.jdbc.driver.OracleDriver"</span>)</div><div class="line">               .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE)</div><div class="line">               .buildProcessEngine();</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<h5 id="4-2-2-使用activiti-cfg-xml配置文件"><a href="#4-2-2-使用activiti-cfg-xml配置文件" class="headerlink" title="4.2.2 使用activiti.cfg.xml配置文件"></a>4.2.2 使用activiti.cfg.xml配置文件</h5><p>在<code>classpath</code>下创建activiti.cfg.xml配置文件（名称随意，只要能访问到即可），内容如下：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span>?&gt;</div><div class="line">&lt;beans xmlns=<span class="string">"http://www.springframework.org/schema/beans"</span></div><div class="line"> xmlns:xsi=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span> xmlns:context=<span class="string">"http://www.springframework.org/schema/context"</span></div><div class="line"> xmlns:tx=<span class="string">"http://www.springframework.org/schema/tx"</span> xmlns:jee=<span class="string">"http://www.springframework.org/schema/jee"</span></div><div class="line"> xmlns:aop=<span class="string">"http://www.springframework.org/schema/aop"</span></div><div class="line"> xsi:schemaLocation=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd</span></div><div class="line"><span class="string">      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd</span></div><div class="line"><span class="string">      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd</span></div><div class="line"><span class="string">      http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd</span></div><div class="line"><span class="string">      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"</span>&gt;</div><div class="line"></div><div class="line"> &lt;!-- 配置流程引擎配置对象 --&gt;</div><div class="line"> &lt;bean id=<span class="string">"processEngineConfiguration"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration"</span>&gt;</div><div class="line">   &lt;property name=<span class="string">"jdbcUrl"</span> value=<span class="string">"jdbc:oracle:thin:@172.16.58.17:1521:orcl"</span>/&gt;</div><div class="line">   &lt;property name=<span class="string">"jdbcDriver"</span> value=<span class="string">"oracle.jdbc.driver.OracleDriver"</span> /&gt;</div><div class="line">   &lt;property name=<span class="string">"jdbcUsername"</span> value=<span class="string">"activiti"</span> /&gt;</div><div class="line">   &lt;property name=<span class="string">"jdbcPassword"</span> value=<span class="string">"111111"</span> /&gt;</div><div class="line">   &lt;property name=<span class="string">"databaseSchemaUpdate"</span> value=<span class="string">"true"</span> /&gt;</div><div class="line">   &lt;property name=<span class="string">"jobExecutorActivate"</span> value=<span class="string">"false"</span> /&gt;</div><div class="line"> &lt;/bean&gt;</div><div class="line"></div><div class="line"> &lt;bean id=<span class="string">"processEngine"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"org.activiti.spring.ProcessEngineFactoryBean"</span>&gt;</div><div class="line">   &lt;property name=<span class="string">"processEngineConfiguration"</span> ref=<span class="string">"processEngineConfiguration"</span> /&gt;</div><div class="line"> &lt;/bean&gt;</div><div class="line"></div><div class="line"> &lt;bean id=<span class="string">"repositoryService"</span> factory-bean=<span class="string">"processEngine"</span> factory-method=<span class="string">"getRepositoryService"</span> /&gt;</div><div class="line"> &lt;bean id=<span class="string">"runtimeService"</span> factory-bean=<span class="string">"processEngine"</span> factory-method=<span class="string">"getRuntimeService"</span> /&gt;</div><div class="line"> &lt;bean id=<span class="string">"taskService"</span> factory-bean=<span class="string">"processEngine"</span> factory-method=<span class="string">"getTaskService"</span> /&gt;</div><div class="line"> &lt;bean id=<span class="string">"formService"</span> factory-bean=<span class="string">"processEngine"</span> factory-method=<span class="string">"getFormService"</span> /&gt;</div><div class="line"> &lt;bean id=<span class="string">"historyService"</span> factory-bean=<span class="string">"processEngine"</span> factory-method=<span class="string">"getHistoryService"</span> /&gt;</div><div class="line"> &lt;bean id=<span class="string">"managementService"</span> factory-bean=<span class="string">"processEngine"</span> factory-method=<span class="string">"getManagementService"</span> /&gt;</div><div class="line"> &lt;bean id=<span class="string">"identityService"</span> factory-bean=<span class="string">"processEngine"</span> factory-method=<span class="string">"getIdentityService"</span> /&gt;</div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure></p>
+<p>测试代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">intiProcessEngine</span><span class="params">()</span> </span>&#123;</div><div class="line">   <span class="comment">// 获取流程引擎</span></div><div class="line">   ProcessEngineConfiguration pec = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(<span class="string">"activiti.cfg.xml"</span>);</div><div class="line">   processEngine =  pec.buildProcessEngine();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h5 id="4-2-3-使用默认配置文件配置文件"><a href="#4-2-3-使用默认配置文件配置文件" class="headerlink" title="4.2.3 使用默认配置文件配置文件"></a>4.2.3 使用默认配置文件配置文件</h5><p>要求配置文件名称必须为activiti-context.xml或者activiti.cfg.xml因为,因为默认的配置ProcessEngines.getDefaultProcessEngine();会初始化这两个文件的其中一个.</p>
+<p>测试代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">intiProcessEngine</span><span class="params">()</span> </span>&#123;</div><div class="line">    ProcessEngine processEngine =ProcessEngines.getDefaultProcessEngine();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="4-3-开发环境搭建-Eclipse插件安装"><a href="#4-3-开发环境搭建-Eclipse插件安装" class="headerlink" title="4.3 开发环境搭建|Eclipse插件安装"></a>4.3 开发环境搭建|Eclipse插件安装</h4><ul>
+<li>通过网址：[<a href="https://www.activiti.org/designer/archived/activiti-designer-5.18.0.zip" target="_blank" rel="external">https://www.activiti.org/designer/archived/activiti-designer-5.18.0.zip</a>] 下载离线安装包。</li>
+<li>将离线安装包解压缩，将包中的内容放入eclipse根目录的dropins文件夹下，重启eclipse。</li>
+</ul>
+<p>安装成功后，打开菜单Preferences-&gt;Activiti-&gt;Save Action，勾选流程图片的生成方式为<code>当保存流程设计图时</code>。<br><img src="/image/201710/Activiti配置.png" alt="&quot;Activiti配置&quot;"></p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Activiti/" rel="tag"><i class="fa fa-tag"></i> Activiti</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/21/使用Hexo在Github上搭建个人网站/" rel="next" title="使用Hexo在Github上搭建个人Blog">
+                <i class="fa fa-chevron-left"></i> 使用Hexo在Github上搭建个人Blog
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/19/Activiti工作流学习2/" rel="prev" title="Activiti工作流之项目中的使用">
+                Activiti工作流之项目中的使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTQyOC83OTky"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="/images/touxiang.png"
+              alt="zqhao" />
+          
+            <p class="site-author-name" itemprop="name">zqhao</p>
+            <p class="site-description motion-element" itemprop="description">最好的期待，是我相信你。</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zqhao" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>GitHub</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2072589562/profile" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>微博</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/c9692c44b55e" target="_blank" title="简书">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>简书</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:hzqiangmac@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/hzygcs" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、基本概念"><span class="nav-number">1.</span> <span class="nav-text">1、基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、核心表介绍"><span class="nav-number">2.</span> <span class="nav-text">2、核心表介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-理解数据库表的命名"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 理解数据库表的命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-表用途介绍"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 表用途介绍</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、核心概念介绍"><span class="nav-number">3.</span> <span class="nav-text">3、核心概念介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-核心API"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 核心API</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-七大Service接口"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 七大Service接口</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、开始使用"><span class="nav-number">4.</span> <span class="nav-text">4、开始使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-在项目里引入相关jar"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 在项目里引入相关jar</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-安装Activiti数据库"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 安装Activiti数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#4-2-1-不使用配置文件"><span class="nav-number">4.2.1.</span> <span class="nav-text">4.2.1 不使用配置文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-2-2-使用activiti-cfg-xml配置文件"><span class="nav-number">4.2.2.</span> <span class="nav-text">4.2.2 使用activiti.cfg.xml配置文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-2-3-使用默认配置文件配置文件"><span class="nav-number">4.2.3.</span> <span class="nav-text">4.2.3 使用默认配置文件配置文件</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-开发环境搭建-Eclipse插件安装"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 开发环境搭建|Eclipse插件安装</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqhao</span>
+
+  
+</div>
+
+
+
+
+  <div class="theme-info">YIRU'S HOME</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="powered-by">
+    <i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  访客数:<span id="busuanzi_value_site_uv"></span></span>
+  </div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="powered-by">
+    <i class="fa fa-read-md"></i><span id="busuanzi_container_site_pv">
+  访问量:<span id="busuanzi_value_site_pv"></span></span>
+  </div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("01AlEf5rUjIHVKeg3JV5or4z-gzGzoHsz", "lVeILtSiskvjNRJGtLhqspM0");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
