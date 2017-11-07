@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Spring," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="知易行难，由于之前很少写技术博客，对于写一篇“还算正式”的技术文章需要花费多少时间并不清楚。第一篇笔记整理了将近一周，这远远超出了我的预期。写完的时候，不免想起那些经常写博客的人一定花费了很多的心思在上面，因而心生佩服。很多事情都是这样，只有做过才会知道其中的不容易。">
+<meta name="keywords" content="Spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring3.X学习笔记2-Bean的基本配置">
+<meta property="og:url" content="http://yoursite.com/2017/11/07/Spring3.X学习笔记2-Bean的基本配置/index.html">
+<meta property="og:site_name" content="功不唐捐">
+<meta property="og:description" content="知易行难，由于之前很少写技术博客，对于写一篇“还算正式”的技术文章需要花费多少时间并不清楚。第一篇笔记整理了将近一周，这远远超出了我的预期。写完的时候，不免想起那些经常写博客的人一定花费了很多的心思在上面，因而心生佩服。很多事情都是这样，只有做过才会知道其中的不容易。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/image/201711/Spring容器高层视图.png">
+<meta property="og:image" content="http://yoursite.com/image/201711/基于XMLScheam的配置.png">
+<meta property="og:updated_time" content="2017-11-07T02:58:59.612Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring3.X学习笔记2-Bean的基本配置">
+<meta name="twitter:description" content="知易行难，由于之前很少写技术博客，对于写一篇“还算正式”的技术文章需要花费多少时间并不清楚。第一篇笔记整理了将近一周，这远远超出了我的预期。写完的时候，不免想起那些经常写博客的人一定花费了很多的心思在上面，因而心生佩服。很多事情都是这样，只有做过才会知道其中的不容易。">
+<meta name="twitter:image" content="http://yoursite.com/image/201711/Spring容器高层视图.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/07/Spring3.X学习笔记2-Bean的基本配置/"/>
+
+
+
+
+
+  <title>Spring3.X学习笔记2-Bean的基本配置 | 功不唐捐</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">功不唐捐</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">耐心专注</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/07/Spring3.X学习笔记2-Bean的基本配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zqhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/touxiang.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="功不唐捐">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Spring3.X学习笔记2-Bean的基本配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-07T10:58:55+08:00">
+                2017-11-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring/" itemprop="url" rel="index">
+                    <span itemprop="name">Spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/11/07/Spring3.X学习笔记2-Bean的基本配置/" class="leancloud_visitors" data-flag-title="Spring3.X学习笔记2-Bean的基本配置">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3,917 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  15 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>知易行难，由于之前很少写技术博客，对于写一篇“还算正式”的技术文章需要花费多少时间并不清楚。第一篇笔记整理了将近一周，这远远超出了我的预期。写完的时候，不免想起那些经常写博客的人一定花费了很多的心思在上面，因而心生佩服。很多事情都是这样，只有做过才会知道其中的不容易。</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="1、Spring配置概述"><a href="#1、Spring配置概述" class="headerlink" title="1、Spring配置概述"></a>1、Spring配置概述</h3><h4 id="1-1-Spring容器高层视图"><a href="#1-1-Spring容器高层视图" class="headerlink" title="1.1 Spring容器高层视图"></a>1.1 Spring容器高层视图</h4><p>Spring容器根据各种形式的Bean配置信息在容器内部建立Bean定义注册表，然后根据注册表加载、实例化Bean，并建立Bean和Bean的依赖关系。Bean的配置信息是Bean的元数据信息，Bean的元数据信息在Spring容器中的内部对应物是由一个一个<strong>BeanDefinition</strong>形成的Bean注册表，Spring实现了Bean元数据信息内部表示和外部表示的解耦。请看下图：<br><img src="/image/201711/Spring容器高层视图.png" alt="&quot;Spring容器高层视图&quot;"></p>
+<h4 id="1-2-基于XML-Schema的配置"><a href="#1-2-基于XML-Schema的配置" class="headerlink" title="1.2 基于XML Schema的配置"></a>1.2 基于XML Schema的配置</h4><p>基于XML的配置，Spring2.0以后开始使用Schema格式，相比Spring1.0的DTD格式，Schema让不同类型的配置拥有了自己的命名空间，使配置文件更具扩展性。下面看一个简单的示例：<br><img src="/image/201711/基于XMLScheam的配置.png" alt="&quot;基于XMLScheam的配置&quot;"></p>
+<p>Schema在文档根节点中通过xmlns对文档中的命名空间进行声明。在上面的代码中定义了3个命名空间：</p>
+<ul>
+<li>默认命名空间：它没有空间名，用于Spring Bean的定义；</li>
+<li>xsi命名空间：这个命名空间用于为每个文档中命名空间指定相应的Schema样式文件，是标准组织定义的标准命名空间；</li>
+<li>aop命名空间：这个命名空间是Spring配置Aop的命名空间，是用户自定义的命名空间；</li>
+</ul>
+<p>命名空间的定义分为两个步骤：第一步指定命名空间的名称，第二部指定命名空间Schema文档样式文件的位置，用空格或回车换行进行分割。在第二步中，指定命名空间的Schema文件地址有两个用途：XML解析器可以获取Schema文件并对文档进行格式合法性验证；在开发环境下，IDE可以引用Schema文件对文档编辑提供诱导功能。</p>
+<h3 id="2、Bean的基本配置"><a href="#2、Bean的基本配置" class="headerlink" title="2、Bean的基本配置"></a>2、Bean的基本配置</h3><h4 id="2-1-Bean配置的基础知识"><a href="#2-1-Bean配置的基础知识" class="headerlink" title="2.1 Bean配置的基础知识"></a>2.1 Bean配置的基础知识</h4><p>一般情况下，Spring IoC容器中的一个Bean即对应配置文件中的一个<code>&lt;bean&gt;</code>，其中<code>id</code>为这个Bean的名称，通过容器的getBean(<code>id</code>)即可获取对应的Bean，在容器中起到定位查找的作用。<code>class</code>属性指定了Bean对应的实现类。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=<span class="string">"foo"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"com.hhxs.domain.Foo"</span>&gt;</div></pre></td></tr></table></figure></p>
+<p><code>id</code>在IoC的容器中必须是唯一的，此外id的命名也需要满足XML对<code>id</code>的命名规范（<code>id</code>是XML规定的特殊属性）：必须以字母开始，后面可以是字母、数字、连字符、下划线、句号、冒号的完整结束的符号，逗号和空格这些非完整结束符是非法的。<br><code>name</code>属性没有字符上的限制，几乎可以使用任何字符。另外<code>id</code>和<code>name</code>都可以指定多个名字，名字之间用逗号、分号或者空格进行分隔：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;bean name=<span class="string">"foo,#foo,$foo"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"com.hhxs.domain.Foo"</span>&gt;</div></pre></td></tr></table></figure></p>
+<p>可以使用getBean(“foo”)、getBean(“#foo”)、getBean(“$foo”)获取IoC容器中的Foo Bean。Spring配置文件中不允许出现两个相同id的<code>&lt;bean&gt;</code>，但可以出现两个相同name的<code>&lt;bean&gt;</code>，多个name相同的<code>&lt;bean&gt;</code>，通过getBean(beanName)获取Bean时，将返回最后声明的那个Bean。如果<code>id</code>和<code>name</code>两属性都未指定，如<bean class="com.baobaotao.simple.Car">，Spring自动将全限定类名作为Bean的名称。</bean></p>
+<h4 id="2-2-注入方式"><a href="#2-2-注入方式" class="headerlink" title="2.2 注入方式"></a>2.2 注入方式</h4><p>Spring支持两种依赖注入方式，分别是属性注入和构造函数注入。除此之外，Spring还支持工厂方法注入方式。</p>
+<h5 id="2-2-1-属性注入"><a href="#2-2-1-属性注入" class="headerlink" title="2.2.1 属性注入"></a>2.2.1 属性注入</h5><p>属性注入要求<strong>Bean</strong>提供一个默认的构造函数，并为需要注入的属性提供对应的<code>Setter</code>方法。Spring先调用<strong>Bean</strong>的默认构造函数实例化<strong>Bean</strong>对象，然后通过反射的方式调用<code>Setter</code>方法注入属性值。JavaBean的属性命名规范：xxx的属性对应setXxx()方法。一般情况下，Java的属性变量名都以小写字母起头，特殊情况下，也允许大写字母起头的属性变量名，但是必须满足“<strong>变量的前两个字母要么全部大写，要么全部小写</strong>”。<br>下面看一个例子：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String brand;</div><div class="line">    <span class="keyword">private</span> String color;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> maxSpeed;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBrand</span><span class="params">(String brand)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"调用setBrand()设置属性。"</span>);</div><div class="line">        <span class="keyword">this</span>.brand = brand;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setColor</span><span class="params">(String color)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.color = color;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMaxSpeed</span><span class="params">(<span class="keyword">int</span> maxSpeed)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.maxSpeed = maxSpeed;</div><div class="line">    &#125;</div><div class="line">    ......</div><div class="line">&#125;</div><div class="line"><span class="comment">// Spring配置文件中的属性注入配置</span></div><div class="line">&lt;bean id=<span class="string">"car"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"com.hhxs.bbt.web.Car"</span> &gt;</div><div class="line">    &lt;property name="brand"&gt;&lt;value&gt;红旗CA72&lt;/value&gt;&lt;/property&gt;</div><div class="line">    &lt;property name="color"&gt;&lt;value&gt;红色&lt;/value&gt;&lt;/property&gt;</div><div class="line">    &lt;property name="maxSpeed"&gt;&lt;value&gt;200&lt;/value&gt;&lt;/property&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure></p>
+<p><strong>Bean</strong>的每一个属性对应一个<property>标签，如<strong>maxSpeed</strong>对应<strong>setMaxSpeed()</strong>。</property></p>
+<p><strong>提示:</strong><em>默认构造函数是不带参的构造函数。Java语言规定如果类中没有定义任何构造函数，则JVM自动为其生成一个默认的构造函数。反之，如果类中显示定义了构造函数，则JVM不会为其生成默认的构造函数。</em></p>
+<h5 id="2-2-2-构造函数注入"><a href="#2-2-2-构造函数注入" class="headerlink" title="2.2.2 构造函数注入"></a>2.2.2 构造函数注入</h5><p>构造函数注入方式是除属性注入之外的另一种常用的注入方式，它保证一些必要的属性在<strong>Bean</strong>实例化时就得到设置，它保证了<strong>Bean</strong>实例在实例化后就可以使用。其中构造参数注入又分为，<strong>按类型匹配入参</strong>、<strong>按索引匹配入参</strong>、<strong>联合使用类型和索引匹配入参</strong>等。这是因为Java反射机制并不会记住构造函数的入参名，我们无法通过指定构造函数的入参名进行构造函数注入的配置，而只能通过入参类型和索引信息间接确定构造函数配置项和入参的对应关系。下面直接看一个<strong>联合使用类型和索引匹配入参</strong>的代码片段：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">Car</span><span class="params">(String brand, String corp, <span class="keyword">double</span> price)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>.brand = brand;</div><div class="line">    <span class="keyword">this</span>.corp = corp;</div><div class="line">    <span class="keyword">this</span>.price = price;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">Car</span><span class="params">(String brand, String corp, <span class="keyword">int</span> maxSpeed)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>.brand = brand;</div><div class="line">    <span class="keyword">this</span>.corp = corp;</div><div class="line">    <span class="keyword">this</span>.maxSpeed = maxSpeed;</div><div class="line">&#125;</div><div class="line">...</div><div class="line"></div><div class="line"><span class="comment">// Spring配置文件中的配置</span></div><div class="line">&lt;!-- 对应Car(String brand, String corp, <span class="keyword">int</span> maxSpeed)构造函数 --&gt;</div><div class="line">&lt;bean id=<span class="string">"car"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"com.hhxs.bbt.web.Car"</span> &gt;</div><div class="line">  &lt;constructor-arg index=<span class="string">"0"</span> type=<span class="string">"java.lang.String"</span>&gt;</div><div class="line">    &lt;value&gt;红旗CA72&lt;/value&gt;</div><div class="line">  &lt;/constructor-arg&gt;</div><div class="line">  &lt;constructor-arg index=<span class="string">"1"</span> type=<span class="string">"java.lang.String"</span>&gt;</div><div class="line">    &lt;value&gt;中国一汽&lt;/value&gt;</div><div class="line">  &lt;/constructor-arg&gt;</div><div class="line">  &lt;constructor-arg index=<span class="string">"2"</span> type=<span class="string">"int"</span>&gt;</div><div class="line">    &lt;value&gt;200&lt;/value&gt;</div><div class="line">  &lt;/constructor-arg&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure></p>
+<p>如果构造函数没有歧义的话，上面配置文件中的<code>type</code>属性和<code>index</code>属性均可去除。另外如果，<strong>Bean</strong>构造函数入参的类型是可辨别的（非基础数据类型且入参类型各异），构造函数注入的配置也是可以不提供类型和索引的信息，但是为了避免潜在配置歧义问题，如果<strong>Bean</strong>存在多个构造函数，使用显示指定index和type属性不失为一种良好的配置习惯。</p>
+<h5 id="2-2-3-工厂注入方法"><a href="#2-2-3-工厂注入方法" class="headerlink" title="2.2.3 工厂注入方法"></a>2.2.3 工厂注入方法</h5><p>Spring IoC容器以框架的方式提供工厂方法的功能，并以透明的方式开放给开发者，所以很少需要手工编写基于工厂方法的类。正因为此，工作方法对于实际编码的重要性大大降低，它将慢慢地淡出开发人员的视野，这里不在说明。</p>
+<h5 id="2-2-4-注入方式的选择"><a href="#2-2-4-注入方式的选择" class="headerlink" title="2.2.4 注入方式的选择"></a>2.2.4 注入方式的选择</h5><p><strong>支持构造函数注入方式的理由：</strong></p>
+<ul>
+<li>构造函数可以保证一些重要的属性在Bean实例化时就设置好，避免因为一些重复属性没有提供，导致一个无用Bean实例的情况；</li>
+<li>不需要为每个属性提供Setter方法，减少了类的方法个数；</li>
+<li>可以更好地封装类变量，不需要为每个属性指定Setter方法，避免外部错误的调用。</li>
+</ul>
+<p><strong>支持属性注入方式的理由：</strong></p>
+<ul>
+<li>如果一个类的属性众多，构造函数的签名将变成一个庞然大物，可读性很差；</li>
+<li>灵活性不够，在有些属性是可选的情况下，如果通过构造函数注入，也需要为可选的参数提供一个null值；</li>
+<li>如果有多个构造函数，需要考虑配置文件和具体构造函数匹配歧义的问题，配置上相对复杂；</li>
+<li>构造函数不利于类的继承和扩展，因为子类需要引用到父类复杂的构造函数；</li>
+<li>构造函数注入有时会造成循环依赖的问题。</li>
+</ul>
+<p>两种方式各有优缺点，生产环境中要根据实际情况使用。除了工厂方法的注入方式已不再使用，属性注入和构造函数注入方式都是比较常用的。</p>
+<h4 id="2-3-简化配置方式"><a href="#2-3-简化配置方式" class="headerlink" title="2.3 简化配置方式"></a>2.3 简化配置方式</h4><p>在之前的例子里我们采用完整配置格式的配置方式，也许你已经发现这种方式显得比较拖沓。如果系统中拥有大量的类需要配置，我们一定会感到崩溃。还好Spring为我们提供了简化的配置方式。如果没有用到完整配置格式的特殊功能，我们一般都只使用简化的配置方式。</p>
+<p><strong>字面值属性：</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"></th>
+<th style="text-align:left">简化前</th>
+<th style="text-align:left">简化后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">字面值属性</td>
+<td style="text-align:left"><code>&lt;property name=&quot;maxSpeed&quot;&gt; &lt;value&gt;你好&lt;/value&gt; &lt;/property&gt;</code></td>
+<td style="text-align:left"><code>&lt;property name=&quot;maxSpeed&quot; value=&quot;200&quot;/&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align:left">构造函数参数</td>
+<td style="text-align:left"><code>&lt;constructor-arg type=&quot;java.lang.String&quot;&gt; &lt;value&gt;红旗CA72&lt;/value&gt; &lt;/constructor-arg&gt;</code></td>
+<td style="text-align:left"><code>&lt;constructor-arg type=&quot;java.lang.String&quot; value=&quot;红旗CA72&quot;/&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align:left">集合元素</td>
+<td style="text-align:left"><code>&lt;map&gt; &lt;entry&gt; &lt;key&gt;&lt;value&gt;AM&lt;/value&gt;&lt;/key&gt; &lt;value&gt;会见客户&lt;value&gt; &lt;/entry&gt; &lt;/map&gt;</code></td>
+<td style="text-align:left"><code>&lt;map&gt; &lt;entry key=&quot;AM&quot; value=&quot;会见客户&quot;/&gt; &lt;/map&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>引用对象属性：</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"></th>
+<th style="text-align:left">简化前</th>
+<th style="text-align:left">简化后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">字面值属性</td>
+<td style="text-align:left"><code>&lt;property name=&quot;car&quot;&gt; &lt;ref bean=&quot;car&quot;&gt;&lt;/ref&gt; &lt;/property&gt;</code></td>
+<td style="text-align:left"><code>&lt;property name=&quot;car&quot; ref=&quot;car&quot;/&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align:left">构造函数参数</td>
+<td style="text-align:left"><code>&lt;constructor-arg&gt; &lt;ref bean=&quot;car&quot;/&gt; &lt;/constructor-arg&gt;</code></td>
+<td style="text-align:left"><code>&lt;constructor-arg ref=&quot;car&quot;/&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align:left">集合元素</td>
+<td style="text-align:left"><code>&lt;map&gt; &lt;entry&gt; &lt;key&gt;&lt;ref bean=&quot;keyBean&quot;/&gt;&lt;/key&gt; &lt;ref bean=&quot;valueBean&quot;/&gt; &lt;/entry&gt; &lt;/map&gt;</code></td>
+<td style="text-align:left"><code>&lt;map&gt; &lt;entry key-ref=&quot;keyBean&quot; value-ref=&quot;valueBean&quot;/&gt; &lt;/map&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>使用P命名空间：</strong><br>为了简化XML文件的配置，越来越多的XML文件采用属性而非子元素配置信息。Spring从2.5版本开始引入了一个新的<strong>p</strong>命名空间，可以通过<code>&lt;bean&gt;</code>元素属性的方式配置<strong>Bean</strong>的属性。</p>
+<p><em><strong>未采用P命名空间前：</strong></em><br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span> ?&gt;</div><div class="line">&lt;beans xmlns=<span class="string">"http://www.springframework.org/schema/beans"</span></div><div class="line">	xmlns:xsi=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></div><div class="line">	xsi:schemaLocation=<span class="string">"http://www.springframework.org/schema/beans</span></div><div class="line"><span class="string">       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"</span>&gt;</div><div class="line">	&lt;bean id=<span class="string">"car"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"com.hhxs.bbt.web.Car"</span> &gt;</div><div class="line">		&lt;property name=<span class="string">"brand"</span> value=<span class="string">"红旗CA72"</span> /&gt;</div><div class="line">		&lt;property name=<span class="string">"color"</span> value=<span class="string">"红色"</span> /&gt;</div><div class="line">		&lt;property name=<span class="string">"maxSpeed"</span> value=<span class="string">"200"</span> /&gt;</div><div class="line">	&lt;/bean&gt;</div><div class="line"></div><div class="line">	&lt;bean id=<span class="string">"boss"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"com.hhxs.bbt.web.Boss"</span>&gt;</div><div class="line">		&lt;property name=<span class="string">"car"</span> ref=<span class="string">"car"</span>/&gt;</div><div class="line">	&lt;/bean&gt;</div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure></p>
+<p><em><strong>采用P命名空间后：</strong></em><br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span> ?&gt;</div><div class="line">&lt;beans xmlns=<span class="string">"http://www.springframework.org/schema/beans"</span></div><div class="line">	xmlns:xsi=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></div><div class="line">	xmlns:p=<span class="string">"http://www.springframework.org/schema/p"</span></div><div class="line">	xsi:schemaLocation=<span class="string">"http://www.springframework.org/schema/beans</span></div><div class="line"><span class="string">       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"</span>&gt;</div><div class="line">	&lt;bean id=<span class="string">"car"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"com.iflytek.bbt.web.Car"</span></div><div class="line">		p:brand=<span class="string">"红旗CA72"</span></div><div class="line">		p:color=<span class="string">"红色"</span></div><div class="line">		p:maxSpeed=<span class="string">"200"</span>/&gt;</div><div class="line"></div><div class="line">	&lt;bean id=<span class="string">"boss"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"com.iflytek.bbt.web.Boss"</span></div><div class="line">		p:car-ref=<span class="string">"car"</span>/&gt;</div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure></p>
+<p>未采用<code>p</code>命名空间前<code>&lt;bean&gt;</code>使用<property>子元素配置Bean的属性，采用<code>p</code>命名空间后，采用<code>&lt;bean&gt;</code>的元素属性配置<strong>Bean</strong>的属性。</property></p>
+<ul>
+<li>对于字面值属性，其格式为： <code>p:&lt;属性名&gt;=&quot;xxx&quot;</code></li>
+<li>对于引用对象的属性，其格式为：<code>p:&lt;属性名&gt;-ref=“xxx”</code></li>
+</ul>
+<p>由于<code>p</code>命名空间中的属性名是可变的，所以<code>p</code>命名空间没有对应的Scheam定义文件，也就不需要在xsi:schemaLocation中为<code>p</code>命名空间指定Schema定义文件。</p>
+<h3 id="3-自动装配"><a href="#3-自动装配" class="headerlink" title="3. 自动装配"></a>3. 自动装配</h3><p>Spring IoC容器了解容器中所有Bean的配置信息，此外通过Java反射机制还可以获取已知实现你类的结构信息（如构造函数方法的结构、属性等信息）。掌握容器中所有Bean的这些信息后，Spring IoC容器就可以按照某种规则对容器中的Bean进行自动装配，而无须我们通过显示的方式进行配置。</p>
+<p><code>&lt;bean&gt;</code>元素提供了一个指定自动个装配类型的属性：autowire=”&lt;自动装配类型&gt;”。Spring提供了4种自动装配类型：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">自动装配类型</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">byName</td>
+<td style="text-align:center">根据名称进行自动匹配。假设Boss有一个名为car的属性，如果容器中刚好有一个名为car的Bean，Spring就会自动将其装配给Boss的car属性。</td>
+</tr>
+<tr>
+<td style="text-align:left">byType</td>
+<td style="text-align:center">根据类型进行自动匹配。假设Boss有一个car类型的属性，如果容器中刚好有一个car类型的Bean，Spring就会自动将其装配给Boss的这个属性。</td>
+</tr>
+<tr>
+<td style="text-align:left">constructor</td>
+<td style="text-align:center">与ByType类似，只不过它是针对构造函数注入而言的，如果Boss有一个构造函数，构造函数包含一个Car类型的入参，如果容器中有一个Car类型的Bean，则Spring将自动把这个Bean作为Boss构造函数的入参，如果容器中没有找到和构造函数入参匹配类型的Bean，Spring将抛出异常。</td>
+</tr>
+<tr>
+<td style="text-align:left">autodetect</td>
+<td style="text-align:center">根据Bean的自省机制决定采用byType还是constructor进行自动装配：如果Bean提供了默认的构造函数，则采用byType; 否则采用constructor</td>
+</tr>
+</tbody>
+</table>
+<p><code>&lt;beans&gt;</code>元素标签中的<code>default-autowire</code>属性可以配置全局自动匹配，<code>default-autowire</code>属性的默认值为<code>no</code>，表示不启用自动装配，其他几个配置值为：byName、byType、constructor、autodetect，意义同上面的表格。注意：<code>&lt;beans&gt;</code>中定义的自动装配策略可以被<code>&lt;bean&gt;</code>的自动装配策略覆盖。</p>
+<p><strong>注意：</strong><em>自动装配机制在减轻配置工作量的同时也会造成配置文件中Bean之间关系不清晰的问题，生产使用时要根据实际项目情况。</em></p>
+<h3 id="4-整合多个配置文件"><a href="#4-整合多个配置文件" class="headerlink" title="4. 整合多个配置文件"></a>4. 整合多个配置文件</h3><p>对于一个大型应用来说，可能有多个XML配置文件，在启动时，可以通过一个String数组指定这些配置文件。Spring还允许我们通过<code>&lt;import&gt;</code>将多个配置文件引入到一个文件中，进行配置文件的集成。如下,beans2.xml引入了beans1.xml配置文件：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;<span class="keyword">import</span> resource=<span class="string">"classpath:beans1.xml"</span>/&gt;</div><div class="line">&lt;bean id=<span class="string">"boss1"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"com.iflytek.bbt.web.Boss"</span>  p:car-ref=<span class="string">"car1"</span>/&gt;</div><div class="line">&lt;bean id=<span class="string">"boss2"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"com.iflytek.bbt.web.Boss"</span>  p:car-ref=<span class="string">"car2"</span>/&gt;</div></pre></td></tr></table></figure></p>
+<p>假设我们已经在beans1.xml中配置了car1和car2的Bean,通过<code>&lt;import&gt;</code>引入beans1.xml，beans2.xml就拥有了完整的配置信息。Spring容器仅需要通过beans2.xml就可以加载到所有的配置信息了。</p>
+<h3 id="5-Bean作用域"><a href="#5-Bean作用域" class="headerlink" title="5. Bean作用域"></a>5. Bean作用域</h3><p>在配置文件中定义Bean时，除了可以配置Bean的属性值以及相互之间的依赖关系，还可以定义Bean的作用域。</p>
+<p><strong>Bean的作用域类型：</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">类别</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">singleton</td>
+<td style="text-align:left">在Spring IoC容器中仅存在一个Bean实例，Bean以单实例的方式存在 。在Spring中，Bean的默认作用域为singleton。如果不希望在容器启动时提前实例化Bean，可以通过lazy-init属性进行控制。</td>
+</tr>
+<tr>
+<td style="text-align:left">prototype</td>
+<td style="text-align:left">每次从容器中调用Bean时，都返回一个新的实例，即每次调用getBean()时，相当于执行new XxxBean()的操作</td>
+</tr>
+<tr>
+<td style="text-align:left">request</td>
+<td style="text-align:left">每次HTTP请求都会创建一个新的Bean。该作用域仅适用于WeApplicationContext环境。</td>
+</tr>
+<tr>
+<td style="text-align:left">session</td>
+<td style="text-align:left">同一个HTTP Session共享一个Bean，不同HTTP Session使用不同的Bean。该作用域仅适用于WeApplicationContext环境。</td>
+</tr>
+<tr>
+<td style="text-align:left">globalSession</td>
+<td style="text-align:left">同一个全局Session共享一个Bean， 一般用于Porlet应用环境。该作用域仅适用于WeApplicationContext环境。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>使用方式是：</strong> <code>scope=&quot;&lt;作用域类型&gt;&quot;</code></p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Spring/" rel="tag"><i class="fa fa-tag"></i> Spring</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/28/Spring学习笔记1-IoC容器概述/" rel="next" title="Spring3.X学习笔记1-IoC容器概述">
+                <i class="fa fa-chevron-left"></i> Spring3.X学习笔记1-IoC容器概述
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTQyOC83OTky"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="/images/touxiang.png"
+              alt="zqhao" />
+          
+            <p class="site-author-name" itemprop="name">zqhao</p>
+            <p class="site-description motion-element" itemprop="description">最好的期待，是我相信你。</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zqhao" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>GitHub</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2072589562/profile" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>微博</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/c9692c44b55e" target="_blank" title="简书">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>简书</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:hzqiangmac@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/hzygcs" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、Spring配置概述"><span class="nav-number">1.</span> <span class="nav-text">1、Spring配置概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-Spring容器高层视图"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 Spring容器高层视图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-基于XML-Schema的配置"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 基于XML Schema的配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、Bean的基本配置"><span class="nav-number">2.</span> <span class="nav-text">2、Bean的基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-Bean配置的基础知识"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Bean配置的基础知识</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-注入方式"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 注入方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-1-属性注入"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1 属性注入</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-2-构造函数注入"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2.2 构造函数注入</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-3-工厂注入方法"><span class="nav-number">2.2.3.</span> <span class="nav-text">2.2.3 工厂注入方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-4-注入方式的选择"><span class="nav-number">2.2.4.</span> <span class="nav-text">2.2.4 注入方式的选择</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-简化配置方式"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 简化配置方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-自动装配"><span class="nav-number">3.</span> <span class="nav-text">3. 自动装配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-整合多个配置文件"><span class="nav-number">4.</span> <span class="nav-text">4. 整合多个配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Bean作用域"><span class="nav-number">5.</span> <span class="nav-text">5. Bean作用域</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqhao</span>
+
+  
+</div>
+
+
+
+
+  <div class="theme-info">YIRU'S HOME</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="powered-by">
+    <i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  访客数:<span id="busuanzi_value_site_uv"></span></span>
+  </div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="powered-by">
+    <i class="fa fa-read-md"></i><span id="busuanzi_container_site_pv">
+  访问量:<span id="busuanzi_value_site_pv"></span></span>
+  </div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("01AlEf5rUjIHVKeg3JV5or4z-gzGzoHsz", "lVeILtSiskvjNRJGtLhqspM0");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
