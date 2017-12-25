@@ -79,7 +79,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Git," />
+  <meta name="keywords" content="profile," />
 
 
 
@@ -95,18 +95,21 @@
 
 
 
-<meta name="description" content="大学的时候就听说过Github,知道很多程序员都在使用Github，更是有很多大神在上面，不能说使用Github的才是优秀的程序员，但是有一点可以明确的是，github是程序员世界的社交平台，大家用彼此的语言高效交流，这是一种生活方式，而想要成为某个领域的高手，最好的方式就是按照高手的方式去生活，在他们的聚集地生活。 一直以来都没怎么好好认真做过一件事，所以接下来的两年里，我想把所有自己未曾做过的">
-<meta name="keywords" content="Git">
+<meta name="description" content="一个优秀的构建系统必须足够灵活，它应该能让项目在不同的环境下都能成功地构建。Maven为了支持构建的灵活性，内置了三大特性，即属性、Profile和资源过滤。这里我们只介绍Profile的使用，以及和Spring Profile的整合。">
+<meta name="keywords" content="profile">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Git与Github">
-<meta property="og:url" content="http://yoursite.com/2017/09/19/Git与Github/index.html">
+<meta property="og:title" content="Maven Profile和Spring Proflie">
+<meta property="og:url" content="http://yoursite.com/2017/12/22/Maven Profile 和 Spring profile/index.html">
 <meta property="og:site_name" content="功不唐捐">
-<meta property="og:description" content="大学的时候就听说过Github,知道很多程序员都在使用Github，更是有很多大神在上面，不能说使用Github的才是优秀的程序员，但是有一点可以明确的是，github是程序员世界的社交平台，大家用彼此的语言高效交流，这是一种生活方式，而想要成为某个领域的高手，最好的方式就是按照高手的方式去生活，在他们的聚集地生活。 一直以来都没怎么好好认真做过一件事，所以接下来的两年里，我想把所有自己未曾做过的">
+<meta property="og:description" content="一个优秀的构建系统必须足够灵活，它应该能让项目在不同的环境下都能成功地构建。Maven为了支持构建的灵活性，内置了三大特性，即属性、Profile和资源过滤。这里我们只介绍Profile的使用，以及和Spring Profile的整合。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-10-19T03:21:11.206Z">
+<meta property="og:image" content="http://yoursite.com/image/201712/jetty-profile.png">
+<meta property="og:image" content="http://yoursite.com/image/201712/jetty-profile.png">
+<meta property="og:updated_time" content="2017-12-25T15:25:49.761Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Git与Github">
-<meta name="twitter:description" content="大学的时候就听说过Github,知道很多程序员都在使用Github，更是有很多大神在上面，不能说使用Github的才是优秀的程序员，但是有一点可以明确的是，github是程序员世界的社交平台，大家用彼此的语言高效交流，这是一种生活方式，而想要成为某个领域的高手，最好的方式就是按照高手的方式去生活，在他们的聚集地生活。 一直以来都没怎么好好认真做过一件事，所以接下来的两年里，我想把所有自己未曾做过的">
+<meta name="twitter:title" content="Maven Profile和Spring Proflie">
+<meta name="twitter:description" content="一个优秀的构建系统必须足够灵活，它应该能让项目在不同的环境下都能成功地构建。Maven为了支持构建的灵活性，内置了三大特性，即属性、Profile和资源过滤。这里我们只介绍Profile的使用，以及和Spring Profile的整合。">
+<meta name="twitter:image" content="http://yoursite.com/image/201712/jetty-profile.png">
 
 
 
@@ -136,13 +139,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/09/19/Git与Github/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/12/22/Maven Profile 和 Spring profile/"/>
 
 
 
 
 
-  <title>Git与Github | 功不唐捐</title>
+  <title>Maven Profile和Spring Proflie | 功不唐捐</title>
   
 
 
@@ -313,7 +316,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/19/Git与Github/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/22/Maven Profile 和 Spring profile/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zqhao">
@@ -330,7 +333,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Git与Github</h1>
+          <h1 class="post-title" itemprop="name headline">Maven Profile和Spring Proflie</h1>
         
 
         <div class="post-meta">
@@ -342,8 +345,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-19T19:54:20+08:00">
-                2017-09-19
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-22T15:30:43+08:00">
+                2017-12-22
               </time>
             
 
@@ -365,8 +368,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Git/" itemprop="url" rel="index">
-                    <span itemprop="name">Git</span>
+                  <a href="/categories/Maven-Spring/" itemprop="url" rel="index">
+                    <span itemprop="name">Maven,Spring</span>
                   </a>
                 </span>
 
@@ -382,7 +385,7 @@
 
           
           
-             <span id="/2017/09/19/Git与Github/" class="leancloud_visitors" data-flag-title="Git与Github">
+             <span id="/2017/12/22/Maven Profile 和 Spring profile/" class="leancloud_visitors" data-flag-title="Maven Profile和Spring Proflie">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -407,7 +410,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,387 字
+                  2,192 字
                 </span>
               
 
@@ -423,7 +426,7 @@
                   <span class="post-meta-item-text">阅读时长</span>
                 
                 <span title="阅读时长">
-                  5 分钟
+                  9 分钟
                 </span>
               
             </div>
@@ -444,46 +447,64 @@
       
 
       
-        <p>大学的时候就听说过Github,知道很多程序员都在使用Github，更是有很多大神在上面，不能说使用Github的才是优秀的程序员，但是有一点可以明确的是，github是程序员世界的社交平台，大家用彼此的语言高效交流，这是一种生活方式，而<strong>想要成为某个领域的高手，最好的方式就是按照高手的方式去生活，在他们的聚集地生活。</strong></p>
-<p>一直以来都没怎么好好认真做过一件事，所以接下来的两年里，我想把所有自己未曾做过的，对自己成长有帮助的事情做一遍，为了找回那丢失已久的自信，也为了给自己一个交代。好了，言归正传。</p>
+        <blockquote>
+<p>一个优秀的构建系统必须足够灵活，它应该能让项目在不同的环境下都能成功地构建。Maven为了支持构建的灵活性，内置了三大特性，即属性、Profile和资源过滤。这里我们只介绍Profile的使用，以及和Spring Profile的整合。</p>
+</blockquote>
 <a id="more"></a>
-<h4 id="1-基础概念"><a href="#1-基础概念" class="headerlink" title="1.基础概念"></a>1.基础概念</h4><p><strong>什么是Git</strong></p>
-<p>Git是一个免费开源的分布式版本控制系统，被设计用于快速和高效处理任何项目。Git很容易学习且有着闪电般的性能。</p>
-<p><strong>什么是Github</strong></p>
-<p>Github是一个基于web的Git版本控制仓库和Internet托管服务，主要用于代码。它提供了Git所有的分布式版本控制和源代码管理（功能），并添加了自己的特性。它为每个项目提供了访问控制和一些协作特性，例如bug跟踪、特性请求、任务管理等。</p>
-<h4 id="2-基本用法"><a href="#2-基本用法" class="headerlink" title="2.基本用法"></a>2.基本用法</h4><p><strong>了解了要学习的东西是什么后，那么下面就开始学习基本的用法：</strong></p>
-<blockquote>
-<p>Git在官网上有一个特别好的入门教程，大家可以访问网站上学习，30分钟足够入门，这是要用一辈子的事情。值得花时间好好学习下：<a href="https://try.github.io/levels/1/challenges/1" target="_blank" rel="external">https://try.github.io/levels/1/challenges/1</a> 。在此不再多说，英文介绍不难理解，需要的话借助辞典。下面只对一些基础概念做些解释：</p>
-</blockquote>
-<ol>
-<li>staged: 表示文件处于已暂存的可以提交的状态。</li>
-<li>unstaged:表示文件的改变还未暂存，当前状态下不可以提交。</li>
-<li>untracked: 文件不在Git的管理中，这通常代表此文件是一个新文件。</li>
-<li>deleted: 文件在本地已经删除正等待从Git上删除。</li>
-<li>Staging Area: 可以理解为存放文件的地方（提交给Git仓库之前）。</li>
-<li>Commit: “commit”命令可以视作仓库的快照，通过这种方式我们可以查看曾经做过对文件的所有改变，不管是自己还是别人操作的，它就像一个时间线一样，记录了所有的改变。</li>
-<li>git remote: 将本地仓库上传到远程仓库，真正实现互联网协作。</li>
-<li>git stash: 隐藏你自己的更改，git stash apply应用你的更改，一般用于拉取别人push的代码的时候。</li>
+<h3 id="Maven-Profile"><a href="#Maven-Profile" class="headerlink" title="Maven Profile"></a>Maven Profile</h3><p>典型的项目一般都会有开发环境、测试环境以及生产环境，在不同的环境中，项目的源码应该使用不同的方式进行构建，这就要求项目构建的时候需要识别所在环境并使用正确的配置。为了能让构建在各个环境下方便的移植，Maven引入了profile的概念，profile可以让我们定义一系列的配置信息，然后指定其激活条件。这样我们就可以定义多个profile，然后每个profile对应不同的激活条件和配置信息，从而达到不同环境使用不同配置信息的效果。</p>
+<h4 id="profile的种类"><a href="#profile的种类" class="headerlink" title="profile的种类"></a>profile的种类</h4><p>根据具体需要，可以在以下位置声明profile:</p>
+<ul>
+<li><strong>pom.xml：</strong> 很显然，pom.xml中声明的profile只对当前项目有效。</li>
+<li><strong>用户settings.xml：</strong> 用户目录下 .m2/settings.xml中的profile对本机上该用户所有的Maven项目有效。</li>
+<li><strong>全局settings.xml：</strong> Maven安装目录下conf/setting.xml中的profile对本机中上所有的Maven项目有效。</li>
+<li><strong>profiles.xml（Maven2）：</strong> 还可以在项目根目录下使用一个额外的profiles.xml文件来声明profile，不过该特性已经在Maven3中被移除。建议用户将这类profile移到settings.xml中。</li>
+</ul>
+<p>使用最多的两种方式是用户settings.xml和pom.xml方式，下面简要说明下不同位置的profile可使用的元素种类：</p>
+<p>POM中的profile可使用的元素，<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">&lt;project&gt;</div><div class="line">    &lt;repositories&gt;&lt;/repositories&gt;</div><div class="line">    &lt;pluginRepositories&gt;&lt;/pluginRepositories&gt;</div><div class="line">    &lt;distributionManagement&gt;&lt;/distributionManagement&gt;</div><div class="line">    &lt;dependencies&gt;&lt;/dependencies&gt;</div><div class="line">    &lt;dependencyManagement&gt;&lt;/dependencyManagement&gt;</div><div class="line">    &lt;modules&gt;&lt;/modules&gt;</div><div class="line">    &lt;properties&gt;&lt;/properties&gt;</div><div class="line">    &lt;reporting&gt;&lt;/reporting&gt;</div><div class="line">    &lt;build&gt;</div><div class="line">        &lt;plugins&gt;&lt;/plugins&gt;</div><div class="line">        &lt;defaultGoal&gt;&lt;/defaultGoal&gt;</div><div class="line">        &lt;resources&gt;&lt;/resources&gt;</div><div class="line">        &lt;testResources&gt;&lt;/testResources&gt;</div><div class="line">        &lt;finalName&gt;&lt;/finalName&gt;</div><div class="line">    &lt;/build&gt;</div><div class="line">&lt;/project&gt;</div></pre></td></tr></table></figure></p>
+<p>POM外部的profile可使用元素，<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;project&gt;</div><div class="line">    &lt;repositories&gt;&lt;/repositories&gt;</div><div class="line">    &lt;pluginRepositories&gt;&lt;/pluginRepositories&gt;</div><div class="line">    &lt;properties&gt;&lt;/properties&gt;</div><div class="line">&lt;/project&gt;</div></pre></td></tr></table></figure></p>
+<h4 id="激活方式"><a href="#激活方式" class="headerlink" title="激活方式"></a>激活方式</h4><ol>
+<li><p>默认激活方式</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;profiles&gt;</div><div class="line">    &lt;profile&gt;</div><div class="line">        &lt;id&gt;dev&lt;/id&gt;  </div><div class="line">        &lt;activation&gt;</div><div class="line">            &lt;activeByDefault&gt;true&lt;/activeByDefault&gt;</div><div class="line">        &lt;/activation&gt;</div><div class="line">        ...</div><div class="line">    &lt;/profile&gt;</div><div class="line">&lt;/profiles&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>命令行激活<br>可以使用mvn命令行参数-P加上profile的id来激活profile，多个id之间以逗号分隔。<br><code>$mvn clean install -Pdev</code></p>
+</li>
+<li><p>settings文件显示激活<br>如果希望某个profile一直处于激活状态，就可以配置settings.xml文件的activeProfiles元素。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;settings&gt;</div><div class="line">    ...</div><div class="line">    &lt;activeProfiles&gt;</div><div class="line">        &lt;actvieProfile&gt;dev&lt;/activeProfile&gt;</div><div class="line">    &lt;/activeProfiles&gt;</div><div class="line">    ...</div><div class="line">&lt;/settings&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>系统属性激活<br>用户可以配置当某系统属性存在的时候，自动激活profile。然后在命令行声明系统属性：<code>$mvn clean install -Dtest</code>，这种方式和第2种很像，而且多个profile可以使用同一个系统属性来激活。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;profiles&gt;</div><div class="line">    &lt;profile&gt;</div><div class="line">        &lt;activation&gt;</div><div class="line">            &lt;property&gt;</div><div class="line">                &lt;name&gt;test&lt;/name&gt;</div><div class="line">            &lt;/property&gt;</div><div class="line">        &lt;/activation&gt;</div><div class="line">        ...</div><div class="line">    &lt;/profile&gt;</div><div class="line">&lt;/profiles&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>操作系统环境激活<br>Profile可以自动根据操作系统环境激活。这里的family的值包括Windows、UNIX和Mac等，而其他几项name、arch、version，用户可以通过查看环境中的系统属性os.name、os.arch、os.version获得。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;profiles&gt;</div><div class="line">    &lt;proflie&gt;</div><div class="line">        &lt;activation&gt;</div><div class="line">            &lt;os&gt;</div><div class="line">                &lt;name&gt;Windows XP&lt;/name&gt;</div><div class="line">                &lt;family&gt;Windows&lt;/family&gt;</div><div class="line">                &lt;arch&gt;x86&lt;/arch&gt;</div><div class="line">                &lt;version&gt;5.1.2600&lt;/version&gt;</div><div class="line">            &lt;/os&gt;</div><div class="line">            ...</div><div class="line">        &lt;/activation&gt;</div><div class="line">    &lt;/profile&gt;</div><div class="line">&lt;/profiles&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>文件存在与否激活<br>Maven能够根据项目中某个文件存在与否来决定是否激活profile.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&lt;profiles&gt;</div><div class="line">    &lt;profile&gt;</div><div class="line">        &lt;activation&gt;</div><div class="line">        &lt;file&gt;</div><div class="line">            &lt;missing&gt;x.properties&lt;/missing&gt;</div><div class="line">            &lt;exists&gt;y.properties&lt;/exists&gt;</div><div class="line">        &lt;/file&gt;</div><div class="line">        &lt;/activation&gt;</div><div class="line">        ...</div><div class="line">    &lt;/profile&gt;</div><div class="line">&lt;/profiles&gt;</div></pre></td></tr></table></figure>
+</li>
 </ol>
-<p><strong>当然一次学习不可能立马就能记住这些命令，很可能第一次正确理解这些概念都很难，不过没关系，这并不影响我们继续向前，在以后不断的实践的过程中你会慢慢理解这些概念的。</strong></p>
-<blockquote>
-<p>Github官网上也有个入门的教程Hello world，好的工具都是功能强大、简单易学的，所以请继续实践，这次15钟左右。。<a href="https://guides.github.com/activities/hello-world/。" target="_blank" rel="external">https://guides.github.com/activities/hello-world/。</a> 同样下面只介绍概念：</p>
-</blockquote>
-<p><strong>学习一样知识或技能，首先就要掌握常用的概念，刚开始看不懂没关系，随着学习的继续深入，反复回过头来看，不断思考直至理解。这就像看书一样，会随着往后看的过程中，慢慢开始理解前面不太明白的地方。</strong></p>
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><p> <a name="anchor"></a>在开发的过程中，我们一般会正在src/main/resource目录下放置配置文件xxx.xml或者xxx.properties。下面以数据库的配置为例来说明profile的使用方式，假设配置文件中有如下数据库配置：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">database.jdbc.driverclass=com.mysql.jdbc.Driver</div><div class="line">database.jdbc.connectionURL=jdbc:mysql:<span class="comment">//localhost:3306/test</span></div><div class="line">database.jdbc.username=dev</div><div class="line">database.jdbc.passowrd=dev-pwd</div></pre></td></tr></table></figure></p>
+<p>如果只是在一个环境中使用就没有什么问题，但是当测试人员想要构建项目进行测试，或者部署上线到生产环境，往往这些环境的信息是不同的，这就需要修改这个配置文件了。将这些配置参数提取到profile中：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">database.jdbc.driverclass=$&#123;db.driver&#125;</div><div class="line">database.jdbc.connectionURL=$&#123;db.url&#125;</div><div class="line">database.jdbc.username=$&#123;db.username&#125;</div><div class="line">database.jdbc.passowrd=$&#123;db.password&#125;</div></pre></td></tr></table></figure></p>
+<p>pom.xml文件中新增prfile：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">&lt;profiles&gt;</div><div class="line">    &lt;profile&gt;</div><div class="line">        &lt;id&gt;dev&lt;/id&gt;</div><div class="line">        &lt;properties&gt;</div><div class="line">            &lt;db.driver&gt;com.mysql.jdbc.Driver&lt;/db.driver&gt;</div><div class="line">            &lt;db.url&gt;jdbc:mysql:<span class="comment">//localhost:3306/test&lt;/db.url&gt;</span></div><div class="line">            &lt;db.username&gt;dev&lt;/db.username&gt;</div><div class="line">            &lt;db.password&gt;dev-pwd&lt;/db.password&gt;</div><div class="line">        &lt;/properties&gt;</div><div class="line">    &lt;/profile&gt;</div><div class="line">    &lt;profile&gt;</div><div class="line">        &lt;id&gt;deploy&lt;/id&gt;</div><div class="line">        &lt;properties&gt;</div><div class="line">            &lt;db.driver&gt;com.mysql.jdbc.Driver&lt;/db.driver&gt;</div><div class="line">            &lt;db.url&gt;jdbc:mysql:<span class="comment">//localhost:3306/deploy&lt;/db.url&gt;</span></div><div class="line">            &lt;db.username&gt;deploy&lt;/db.username&gt;</div><div class="line">            &lt;db.password&gt;deploy-pwd&lt;/db.password&gt;</div><div class="line">        &lt;/properties&gt;</div><div class="line">    &lt;/profile&gt;</div><div class="line"></div><div class="line">&lt;/profiles&gt;</div></pre></td></tr></table></figure></p>
+<p>有了属性定义，配置文件中也有了这些属性。但是Maven属性默认只有在POM中才会被解析，放在<code>src/main/resources/</code>下并不会被解析。因此需要借助<code>maven-resource-plugin</code>插件来为资源目录开启过滤，这样Maven就能解析资源文件中的Maven属性了。<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;resources&gt;</div><div class="line">    &lt;resource&gt;</div><div class="line">        &lt;directory&gt;$&#123;project.basedir&#125;/src/main/resources&lt;/directory&gt;</div><div class="line">        &lt;filtering&gt;true&lt;/filtering&gt;</div><div class="line">    &lt;/resource&gt;</div><div class="line">    &lt;resource&gt;</div><div class="line">        &lt;directory&gt;$&#123;project.basedir&#125;/src/test/resources&lt;/directory&gt;</div><div class="line">        &lt;filtering&gt;true&lt;/filtering&gt;</div><div class="line">    &lt;/resource&gt;</div><div class="line">&lt;/resources&gt;</div></pre></td></tr></table></figure></p>
+<p>Maven允许用户声明多个资源目录，并且为每个资源目录提供不同的过滤配置。最后，只需要在命令行激活profile，Maven就能够在构建项目的的时候使用profile中属性值替换数据库配置文件中的属性引用。运行命令行如下：<br><code>$mvn clean install -Pdev</code></p>
+<h3 id="Spring-Profile"><a href="#Spring-Profile" class="headerlink" title="Spring Profile"></a>Spring Profile</h3><p>Spring profile是Spring 3.1引入的概念，通过定义<code>profile</code>来将若干不同的<code>bean</code>定义组织起来，从而实现不同环境自动激活不同的<code>profile</code>来切换配置参数的功能。</p>
+<p>在实际项目的开发过程中，开发环境一般使用项目中自带文件，而在部署生产环境的时候使用指定目录下的配置文件，下面就以配置文件切换为例来说明profile的使用方法：</p>
+<h4 id="在applicationContext-xml里定义profile"><a href="#在applicationContext-xml里定义profile" class="headerlink" title="在applicationContext.xml里定义profile"></a>在applicationContext.xml里定义profile</h4><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;!-- dev环境 --&gt;</div><div class="line">&lt;beans profile=<span class="string">"dev"</span>&gt;</div><div class="line">    &lt;context:property-placeholder ignore-resource-not-found=<span class="string">"true"</span> location=<span class="string">"classpath:config/xxxx.properties"</span> /&gt;    </div><div class="line">....</div><div class="line">&lt;/beans&gt;</div><div class="line">&lt;!-- deploy环境 --&gt;</div><div class="line">&lt;beans profile=<span class="string">"deploy"</span>&gt;</div><div class="line">    &lt;context:property-placeholder ignore-resource-not-found=<span class="string">"true"</span> location=<span class="string">"file:D:\xx\xxx\xxxx.properties"</span>/&gt;  </div><div class="line">....</div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure>
+<p><strong>或者：</strong><br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"> &lt;context:property-placeholder system-properties-mode=<span class="string">"OVERRIDE"</span> file-encoding=<span class="string">"UTF-8"</span> properties-ref=<span class="string">"configProperties"</span> /&gt;</div><div class="line"></div><div class="line"> &lt;beans profile=<span class="string">"dev"</span>&gt;</div><div class="line">	&lt;bean id=<span class="string">"configProperties"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"org.springframework.beans.factory.config.PropertiesFactoryBean"</span>&gt;</div><div class="line">		&lt;property name=<span class="string">"locations"</span>&gt;</div><div class="line">			&lt;list&gt;</div><div class="line">				&lt;value&gt;classpath:config/xxxx.properties&lt;/value&gt;</div><div class="line">			&lt;/list&gt;</div><div class="line">		&lt;/property&gt;</div><div class="line">	&lt;/bean&gt;</div><div class="line">&lt;/beans&gt;</div><div class="line"></div><div class="line">&lt;beans profile=<span class="string">"deploy"</span>&gt;</div><div class="line">	&lt;bean id=<span class="string">"configProperties"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"org.springframework.beans.factory.config.PropertiesFactoryBean"</span>&gt;</div><div class="line">		&lt;property name=<span class="string">"locations"</span>&gt;</div><div class="line">			&lt;list&gt;</div><div class="line">				&lt;value&gt;file:D:\xx\xxx\xxxx.properties&lt;/value&gt;</div><div class="line">			&lt;/list&gt;</div><div class="line">		&lt;/property&gt;</div><div class="line">	&lt;/bean&gt;</div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure></p>
+<h4 id="在web-xml定义默认profile"><a href="#在web-xml定义默认profile" class="headerlink" title="在web.xml定义默认profile"></a>在web.xml定义默认profile</h4><p><a name="anchor1"></a>默认<code>profile</code>是指在没有任何<code>profile</code>被激活的情况下，默认<code>profile</code>内定义的内容将被使用。<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"> &lt;context-param&gt;</div><div class="line">    &lt;param-name&gt;spring.profiles.default&lt;/param-name&gt;</div><div class="line">     &lt;param-value&gt;dev&lt;/param-value&gt;</div><div class="line">&lt;/context-param&gt;</div></pre></td></tr></table></figure></p>
+<h4 id="激活profile"><a href="#激活profile" class="headerlink" title="激活profile"></a>激活profile</h4><p>spring为我们提供了大量的激活<code>profile</code>的方法，可以通过代码来激活，也可以通过系统环境变量、JVM参数、servlet上下文参数来定义<code>spring.profiles.active</code>参数激活<code>profile</code>，这里我们通过定义servlet上下文参数参数实现。<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;context-param&gt;</div><div class="line">  &lt;param-name&gt;spring.profiles.active&lt;/param-name&gt;</div><div class="line">  &lt;param-value&gt;$&#123;profiles.activation&#125;&lt;/param-value&gt;</div><div class="line">&lt;/context-param&gt;</div></pre></td></tr></table></figure></p>
+<p>其中，<code>${profiles.activation}</code>需要在实际运行项目的时候指定环境变量，这样既可以做到不同的环境下切换不同的配置文件，也可以直接设置具体值，这样可以省去2.4节的环境属性设置。</p>
+<h4 id="运行项目"><a href="#运行项目" class="headerlink" title="运行项目"></a>运行项目</h4><p>这里以jetty服务器做介绍，如果使用maven内置jetty插件启动，我们需要在pom中定义环境属性，如下图：<br><img src="/image/201712/jetty-profile.png" alt="&quot;maven-jetty环境变量配置&quot;"><br>如果是使用eclipse jetty插件启动，我们需要在服务器配置中增加环境变量，如下图：<br><img src="/image/201712/jetty-profile.png" alt="&quot;eclipse-jetty环境变量配置&quot;"></p>
+<h3 id="Maven整合Spring-profile"><a href="#Maven整合Spring-profile" class="headerlink" title="Maven整合Spring profile"></a>Maven整合Spring profile</h3><p>实际项目中我们大多以Maven来管理项目，所以这一部分来介绍如何在Maven中整合Spring profile。<br><a href="#anchor">1.3节的示例</a>已经介绍了在maven的pom文件中如何增加profile，并且指定了默认的激活profile，现在我们将其改为<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">&lt;profiles&gt;</div><div class="line">    &lt;profile&gt;</div><div class="line">        &lt;id&gt;dev&lt;/id&gt;</div><div class="line">        &lt;activation&gt;</div><div class="line">            &lt;activeByDefault&gt;true&lt;/activeByDefault&gt;</div><div class="line">        &lt;/activation&gt;</div><div class="line">        &lt;properties&gt;</div><div class="line">            &lt;profiles.activation&gt;dev&lt;/profiles.activation&gt;</div><div class="line">        &lt;/properties&gt;</div><div class="line">    &lt;/profile&gt;</div><div class="line">    &lt;profile&gt;</div><div class="line">        &lt;id&gt;deploy&lt;/id&gt;</div><div class="line">        &lt;properties&gt;</div><div class="line">            &lt;profiles.activation&gt;deploy&lt;/profiles.activation&gt;</div><div class="line">        &lt;/properties&gt;</div><div class="line">    &lt;/profile&gt;</div><div class="line">&lt;/profiles&gt;</div></pre></td></tr></table></figure></p>
+<p>注意这里的<code>&lt;profiles.actviation&gt;</code>属性名称要和<a href="#anchor1">2.3 激活profile</a>里配置的属性值<code>${profiles.activation}</code>对应，用于在打包的时候指定激活的profile</p>
+<h4 id="配置Maven插件，进行资源过滤"><a href="#配置Maven插件，进行资源过滤" class="headerlink" title="配置Maven插件，进行资源过滤"></a>配置Maven插件，进行资源过滤</h4><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">&lt;plugin&gt;</div><div class="line">    &lt;artifactId&gt;maven-war-plugin&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;2.0.2&lt;/version&gt;</div><div class="line">    &lt;configuration&gt;</div><div class="line">        &lt;warName&gt;$&#123;profiles.activation&#125;&lt;/warName&gt;</div><div class="line">        &lt;!-- 激活spring profile --&gt;</div><div class="line">        &lt;webResources&gt;</div><div class="line">            &lt;resource&gt;</div><div class="line">                &lt;filtering&gt;true&lt;/filtering&gt;</div><div class="line">                &lt;directory&gt;$&#123;basedir&#125;/src/main/webapp&lt;/directory&gt;</div><div class="line">                &lt;includes&gt;</div><div class="line">                    &lt;include&gt;**/web.xml&lt;/include&gt;</div><div class="line">                &lt;/includes&gt;</div><div class="line">            &lt;/resource&gt;</div><div class="line">        &lt;/webResources&gt;</div><div class="line">        &lt;warSourceDirectory&gt;$&#123;basedir&#125;/src/main/webapp&lt;/warSourceDirectory&gt;</div><div class="line">        &lt;webXml&gt;$&#123;basedir&#125;/src/main/webapp/WEB-INF/web.xml&lt;/webXml&gt;</div><div class="line">        &lt;warName&gt;实际打包名称或者用$&#123;profiles.activation&#125;替代，否则会找不到war包&lt;/warName&gt;  </div><div class="line">    &lt;/configuration&gt;</div><div class="line">&lt;/plugin&gt;</div></pre></td></tr></table></figure>
+<p><strong>这一部很关键：</strong> <em>配置的目的是为了打包的时候，替换web.xml中配置的servlet上下文参数值<code>${profiles.activation}</code>，如果不配置，会发现打包后的web.xml中<code>${profiles.activation}</code>并没有被替换。</em></p>
+<h4 id="打包"><a href="#打包" class="headerlink" title="打包"></a>打包</h4><p>打包到部署环境<br><code>$mvn clean install -Pdeploy</code></p>
+<p>打包到体验环境<br><code>$mvn clean install -Pdev</code></p>
+<p><strong>参考书籍：</strong></p>
 <ol>
-<li>respository: 仓库通常用于组织一个工程，可以包含任何你需要的东西，你的想法、资源甚至可以在上面与其他人分享和讨论。</li>
-<li>branch: 分支可以让你在同一时间拥有同一仓库的不同版本，每个respository都有一个默认分支master，一般作为主分支。在Github中，branch一般用来修复bug和做些。分支是Git的核心概念，整个Github流就是基于此实现。<br>未来的工作，当完成这些工作后，就会将子分支合并到主分支里。</li>
-<li>pull request: 拉请求是在Github上协作的核心，当你打开一个拉请求，你提交你的改变并要求其他人查看你提交的东西并将它们合并到他们的分支中。拉请求显示了来自两个分支的内容的差异和不同。</li>
+<li>Maven实战 许晓斌著</li>
+<li>spring proflie参考网上资料以及实际使用</li>
 </ol>
-<p><strong>在这里简单介绍下在Github里想要贡献自己代码的流程，方便大家理解pull requet：</strong></p>
-<blockquote>
-<p>1.fork别人的仓库，相当于拷贝一份别人的代码，然后clone到本地分支<br>2.做些bug修复或添加新功能，然后发起pull request给原仓库作者，让他看到你的修改<br>3.原仓库作者review这些改变，如果是正确的，他就会将你的这些改变merge到他自己的分支中</p>
-</blockquote>
-<p>至此，整个pull request的过程结束，这也是在Github上与其他人协作的核心流程。</p>
-<h4 id="3-其他"><a href="#3-其他" class="headerlink" title="3.其他"></a>3.其他</h4><blockquote>
-<p>习得任何技能的最根本技巧就是马上开始像那些已经精通这个技能的人一样生活.</p>
-</blockquote>
-<p>所以请经常使用Github，没事的时候也在上面逛逛，也许就有收获。</p>
 
       
     </div>
@@ -512,7 +533,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Git/" rel="tag"><i class="fa fa-tag"></i> Git</a>
+            <a href="/tags/profile/" rel="tag"><i class="fa fa-tag"></i> profile</a>
           
         </div>
       
@@ -525,8 +546,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/09/06/写在开始/" rel="next" title="写在开始">
-                <i class="fa fa-chevron-left"></i> 写在开始
+              <a href="/2017/12/20/列表排序思路/" rel="next" title="列表排序思路">
+                <i class="fa fa-chevron-left"></i> 列表排序思路
               </a>
             
           </div>
@@ -534,10 +555,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/09/21/使用Hexo在Github上搭建个人网站/" rel="prev" title="使用Hexo在Github上搭建个人Blog">
-                使用Hexo在Github上搭建个人Blog <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -708,7 +725,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-基础概念"><span class="nav-number">1.</span> <span class="nav-text">1.基础概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-基本用法"><span class="nav-number">2.</span> <span class="nav-text">2.基本用法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-其他"><span class="nav-number">3.</span> <span class="nav-text">3.其他</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Maven-Profile"><span class="nav-number">1.</span> <span class="nav-text">Maven Profile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#profile的种类"><span class="nav-number">1.1.</span> <span class="nav-text">profile的种类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#激活方式"><span class="nav-number">1.2.</span> <span class="nav-text">激活方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#示例"><span class="nav-number">1.3.</span> <span class="nav-text">示例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-Profile"><span class="nav-number">2.</span> <span class="nav-text">Spring Profile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#在applicationContext-xml里定义profile"><span class="nav-number">2.1.</span> <span class="nav-text">在applicationContext.xml里定义profile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在web-xml定义默认profile"><span class="nav-number">2.2.</span> <span class="nav-text">在web.xml定义默认profile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#激活profile"><span class="nav-number">2.3.</span> <span class="nav-text">激活profile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行项目"><span class="nav-number">2.4.</span> <span class="nav-text">运行项目</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Maven整合Spring-profile"><span class="nav-number">3.</span> <span class="nav-text">Maven整合Spring profile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#配置Maven插件，进行资源过滤"><span class="nav-number">3.1.</span> <span class="nav-text">配置Maven插件，进行资源过滤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#打包"><span class="nav-number">3.2.</span> <span class="nav-text">打包</span></a></li></ol></li></ol></div>
             
 
           </div>
