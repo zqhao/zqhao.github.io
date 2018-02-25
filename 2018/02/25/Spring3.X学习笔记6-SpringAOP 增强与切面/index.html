@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="AOP," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="上一篇文章介绍了SpringAOP的基础知识以及所依赖的底层Java技术，本篇来说下SpringAOP的增强类型以及切面类型。">
+<meta name="keywords" content="AOP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring3.X学习笔记6-SpringAOP增强与切面">
+<meta property="og:url" content="http://yoursite.com/2018/02/25/Spring3.X学习笔记6-SpringAOP 增强与切面/index.html">
+<meta property="og:site_name" content="功不唐捐">
+<meta property="og:description" content="上一篇文章介绍了SpringAOP的基础知识以及所依赖的底层Java技术，本篇来说下SpringAOP的增强类型以及切面类型。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/image/201802/增强接口继承关系图.png">
+<meta property="og:image" content="http://yoursite.com/image/201802/AopProxy类结构.png">
+<meta property="og:updated_time" content="2018-02-25T02:45:17.001Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring3.X学习笔记6-SpringAOP增强与切面">
+<meta name="twitter:description" content="上一篇文章介绍了SpringAOP的基础知识以及所依赖的底层Java技术，本篇来说下SpringAOP的增强类型以及切面类型。">
+<meta name="twitter:image" content="http://yoursite.com/image/201802/增强接口继承关系图.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/25/Spring3.X学习笔记6-SpringAOP 增强与切面/"/>
+
+
+
+
+
+  <title>Spring3.X学习笔记6-SpringAOP增强与切面 | 功不唐捐</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">功不唐捐</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">耐心专注</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/25/Spring3.X学习笔记6-SpringAOP 增强与切面/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zqhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/touxiang.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="功不唐捐">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Spring3.X学习笔记6-SpringAOP增强与切面</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-25T10:45:13+08:00">
+                2018-02-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring/" itemprop="url" rel="index">
+                    <span itemprop="name">Spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/02/25/Spring3.X学习笔记6-SpringAOP 增强与切面/" class="leancloud_visitors" data-flag-title="Spring3.X学习笔记6-SpringAOP增强与切面">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  7,110 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  31 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>上一篇文章介绍了SpringAOP的基础知识以及所依赖的底层Java技术，本篇来说下SpringAOP的增强类型以及切面类型。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="SpringAop的增强类型"><a href="#SpringAop的增强类型" class="headerlink" title="SpringAop的增强类型"></a>SpringAop的增强类型</h2><p>AOP联盟为增强定义了<code>org.aopaliance.aop.Advice</code>接口，下图为增强接口继承关系图：</p>
+<p><img src="/image/201802/增强接口继承关系图.png" alt="&quot;增强接口继承关系图&quot;"></p>
+<p>带《spring》标识的接口是Spring所定义的扩展增强接口；带《aopalliance》标识的接口则是AOP联盟定义的接口。按照增强在目标类方法的连接点位置，可以分为以下5类：</p>
+<ul>
+<li><strong>前置增强：</strong> <code>org.springframework.aop.BeforeAdvice</code>代表前置增强，因为Spring只支持方法级别的增强，所以MethodBeforeAdvice是目前可用的前置增强，表示在方法执行前实施增强，而BeforeAdvice是为了将来版本扩展需要而定义的；</li>
+<li><strong>后置增强：</strong> <code>org.springframework.aop.AfterReturningAdvice</code>代表后增强，表示在目标方法执行后实施增强；</li>
+<li><strong>环绕增强：</strong> <code>org.springframework.intercept.MethodInterceptor</code>代表环绕增强，表示在目标方法执行前后实施增强；</li>
+<li><strong>异常抛出增强：</strong> <code>org.springframework.aop.ThrowsAdvice</code>代表抛出异常增强，表示在目标方法抛出异常后实施增强；</li>
+<li><strong>引介增强：</strong> <code>org.springframework.aop.IntroductionInterceptor</code>代表引介增强，表示在目标类中添加一些新的方法和属性。</li>
+</ul>
+<p>在了解了基础信息后，下面就来分别看下各种增强的用法。通过使用 <strong>“保证服务生使用礼貌用语的例子”</strong> 来说明各种增强的使用方式。</p>
+<h3 id="前置增强"><a href="#前置增强" class="headerlink" title="前置增强"></a>前置增强</h3><p>服务生接口<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.hhxs.bbt.advice;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Waiter</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 欢迎顾客</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> name</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">greetTo</span><span class="params">(String name)</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 对顾客提供服务</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> name</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">serveTo</span><span class="params">(String name)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>现在，来看一个未参加过培训的服务生的服务情况：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.hhxs.bbt.advice;</div><div class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</div><div class="line"></div><div class="line"><span class="meta">@Component</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NaiveWaiter</span> <span class="keyword">implements</span> <span class="title">Waiter</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">greetTo</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"greet to "</span> + name + <span class="string">"..."</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">serveTo</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"serving "</span> + name + <span class="string">"..."</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>NaiveWaiter只是简单的向顾客打招呼，直接提供服务。下面，我们使用前置增强对NaiveWaiter的服务进行规范，让他们在提供服务之前，必须先对顾客使用礼貌用语。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.hhxs.bbt.advice;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.lang.reflect.Method;</div><div class="line"><span class="keyword">import</span> org.springframework.aop.MethodBeforeAdvice;</div><div class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</div><div class="line"></div><div class="line"><span class="meta">@Component</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GreetingBeforeAdvice</span> <span class="keyword">implements</span> <span class="title">MethodBeforeAdvice</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 在目标类方法调用前执行</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before</span><span class="params">(Method method, Object[] args, Object target)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">        String clientName = (String)args[<span class="number">0</span>];</div><div class="line">        System.out.println(<span class="string">"How are you! Mr."</span> + clientName + <span class="string">"."</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上述代码中，我们看到了MethodBeforeAdvice接口的唯一方法<code>before(Method method, Object[] args, Object obj) throws Throwable</code>，method为目标类的方法；args为目标类方法的入参；而obj为目标类实例。当该方法发生异常时，将阻止目标类方法的执行。</p>
+<p>下面编写测试例子，看下具体的执行情况：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.hhxs.bbt.advice;</div><div class="line"><span class="keyword">import</span> org.springframework.aop.BeforeAdvice;</div><div class="line"><span class="keyword">import</span> org.springframework.aop.framework.ProxyFactory;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBeforeAdvice</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        Waiter waiter = <span class="keyword">new</span> NaiveWaiter();</div><div class="line">        BeforeAdvice advice = <span class="keyword">new</span> GreetingBeforeAdvice();</div><div class="line">        <span class="comment">// Spring提供的代理工厂</span></div><div class="line">        ProxyFactory pf = <span class="keyword">new</span> ProxyFactory();</div><div class="line">        <span class="comment">// 设置代理目标</span></div><div class="line">        pf.setTarget(waiter);</div><div class="line">        <span class="comment">// 为代理目标添加增强</span></div><div class="line">        pf.addAdvice(advice);</div><div class="line">        <span class="comment">// 生成代理实例</span></div><div class="line">        Waiter proxy = (Waiter) pf.getProxy();</div><div class="line">        proxy.greetTo(<span class="string">"张三"</span>);</div><div class="line">        proxy.serveTo(<span class="string">"李四"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>运行上面的代码，控制台输出信息如下，我们可以看到，通过前置增强在方法前面引入了礼貌用语。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">How are you! Mr.张三.</div><div class="line">greet to 张三...</div><div class="line">How are you! Mr.李四.</div><div class="line">serving 李四...</div></pre></td></tr></table></figure></p>
+<p><strong>解剖ProxyFactory</strong><br>在TestBeforeAdvice中，我们使用<code>org.springframework.aop.framework.ProxyFactory</code>代理工厂将GreetingBeforeAdvice的增强织入到目标类NaiveWaiter中。有没有发现，调用方式与上一节介绍的JDK代理和CgLib代理很相似？不错，ProxyFactory的内部就是使用了JDK代理或CGLib技术。下图为AopProxy类结构：</p>
+<p><img src="/image/201802/AopProxy类结构.png" alt="&quot;AopProxy类结构&quot;"></p>
+<p>其中，Cglib2AopProxy使用CGLib代理技术创建代理，而JdkDynamicAopProxy使用JDK代理技术创建代理。如果通过ProxyFactory的<code>setInterfaces(Class[] interfaces)</code>指定针对接口进行代理，ProxyFactory就使用JdkDynamicAopProxy；如果针对类的代理，则使用Cglib2AopProxy。此外，还可以通过ProxyFactory的<code>setOptimize(true)</code>方法，让ProxyFactory启动优化代理方式，这样，针对接口的代理也会使用CglibAopProxy。<em>需要注意的是，用户可以通过调用ProxyFactory的<code>addAdvice(Advice)</code>方法添加多个增强，增强的调用顺序和添加顺序一致。</em></p>
+<p><strong>在Spring中配置</strong></p>
+<p>虽然使用ProxyFactory比直接使用CGLib或JDK代理技术创建代理省事很多，但是正如大家预想的一样，还可以通过Sping配置的方式来声明代理。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">// spring1.xml代码片段</div><div class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></div><div class="line"><span class="tag">	<span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="attr">xmlns:context</span>=<span class="string">"http://www.springframework.org/schema/context"</span></span></div><div class="line"><span class="tag">	<span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></span></div><div class="line"><span class="tag"><span class="string">       http://www.springframework.org/schema/beans/spring-beans-3.1.xsd</span></span></div><div class="line"><span class="tag"><span class="string">       http://www.springframework.org/schema/context</span></span></div><div class="line"><span class="tag"><span class="string">       http://www.springframework.org/schema/context/spring-context-3.1.xsd"</span>&gt;</span></div><div class="line"></div><div class="line">	<span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">"com.hhxs.bbt.advice"</span> /&gt;</span></div><div class="line"></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"waiter"</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.framework.ProxyFactoryBean"</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"interfaces"</span> <span class="attr">value</span>=<span class="string">"com.hhxs.bbt.advice.Waiter"</span> /&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"target"</span> <span class="attr">ref</span>=<span class="string">"naiveWaiter"</span> /&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"interceptorNames"</span>&gt;</span></div><div class="line">			<span class="tag">&lt;<span class="name">list</span>&gt;</span></div><div class="line">				<span class="tag">&lt;<span class="name">value</span>&gt;</span>greetingBeforeAdvice<span class="tag">&lt;/<span class="name">value</span>&gt;</span></div><div class="line">			<span class="tag">&lt;/<span class="name">list</span>&gt;</span></div><div class="line">		<span class="tag">&lt;/<span class="name">property</span>&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.hhxs.bbt.advice;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</div><div class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BeforeAdviceClient</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        ApplicationContext context = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"spring/advice/spring1.xml"</span>);</div><div class="line">        Waiter waiter = (Waiter) context.getBean(<span class="string">"waiter"</span>);</div><div class="line">        waiter.greetTo(<span class="string">"张三"</span>);</div><div class="line">        waiter.serveTo(<span class="string">"李四"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>下面介绍下ProxyFactoryBean的几个常用的可配置属性：</p>
+<ul>
+<li><strong>target：</strong> 代理的目标对象；</li>
+<li><strong>proxyInterfaces：</strong> 代理所要实现的接口，可以是多个接口。该属性还有一个别名属性interfaces；</li>
+<li><strong>interceptorNames：</strong> 需要植入目标对象的Bean列表，采用Bean的名称指定。这些Bean必须是实现；了<code>org.aopalliance.intercept.MethodInterceptor</code>或<code>org.springframework.aop.Advisor</code>的Bean，配置中的顺序对应调用的顺序；</li>
+<li><strong>singleton：</strong> 返回的代理是否是单实例，默认为单实例；</li>
+<li><strong>optimize：</strong> 当设置为true时，强制使用CGLib代理。<em>对于单实例的代理，推荐使用CGLib，对于其他作用域的代理，最好使用JDK代理。原因是CGLib创建代理时速度慢，而创建出的代理对象运行效率高，而使用JDK代理的表现正好相反；</em></li>
+<li><strong>proxyTargetClass：</strong> 是否对类进行代理，设置为true时，使用CGLib代理。</li>
+</ul>
+<h3 id="后置增强"><a href="#后置增强" class="headerlink" title="后置增强"></a>后置增强</h3><p>后置增强在目标类方法调用后执行，接着上面的例子，增加服务后用语。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> org.springframework.aop.AfterReturningAdvice;</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GreetingAfterAdvice</span> <span class="keyword">implements</span> <span class="title">AfterReturningAdvice</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterReturning</span><span class="params">(Object returnValue, Method method, Object[] args, Object target)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">        System.out.println(<span class="string">"Please enjoy yourself!"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>其中<code>returnValue</code>为目标实例方法返回的结果；<code>method</code>为目标类的方法；<code>args</code>为目标实例的方法的入参；而<code>target</code>为目标类实例。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// spring2.xml代码片段</span></div><div class="line">...</div><div class="line">&lt;bean id=<span class="string">"waiter"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"org.springframework.aop.framework.ProxyFactoryBean"</span>&gt;</div><div class="line">		&lt;property name=<span class="string">"interfaces"</span> value=<span class="string">"com.hhxs.bbt.advice.Waiter"</span> /&gt;</div><div class="line">		&lt;property name=<span class="string">"target"</span> ref=<span class="string">"naiveWaiter"</span> /&gt;</div><div class="line">		&lt;property name=<span class="string">"interceptorNames"</span>&gt;</div><div class="line">			&lt;list&gt;</div><div class="line">				&lt;value&gt;greetingBeforeAdvice&lt;/value&gt;</div><div class="line">				&lt;value&gt;greetingAfterAdvice&lt;/value&gt;</div><div class="line">			&lt;/list&gt;</div><div class="line">		&lt;/property&gt;</div><div class="line">	&lt;/bean&gt;</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AfterAdviceClient</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        ApplicationContext context = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"spring/advice/spring2.xml"</span>);</div><div class="line">        Waiter waiter = (Waiter) context.getBean(<span class="string">"waiter"</span>);</div><div class="line">        waiter.greetTo(<span class="string">"张三"</span>);</div><div class="line">        waiter.serveTo(<span class="string">"李四"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>运行上面的代码，控制台输出信息如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">How are you! Mr.张三.</div><div class="line">greet to 张三...</div><div class="line">Please enjoy yourself!</div><div class="line">How are you! Mr.李四.</div><div class="line">serving 李四...</div><div class="line">Please enjoy yourself!</div></pre></td></tr></table></figure></p>
+<h3 id="环绕增强"><a href="#环绕增强" class="headerlink" title="环绕增强"></a>环绕增强</h3><p>环绕增强允许在目标类方法调用前后织入横切逻辑，综合实现了前置、后置增强两者的功能。下面我们使用环绕增强实现上面的功能。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> org.aopalliance.intercept.MethodInterceptor;</div><div class="line"><span class="keyword">import</span> org.aopalliance.intercept.MethodInvocation;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GreetingInterceptor</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(MethodInvocation invocation)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">        <span class="comment">// 获取目标方法入参</span></div><div class="line">        Object[] args = invocation.getArguments();</div><div class="line">        String clientName = (String) args[<span class="number">0</span>];</div><div class="line">        System.out.println(<span class="string">"How are you! Mr."</span> + clientName + <span class="string">"."</span>);</div><div class="line">        <span class="comment">// 通过反射机制调用目标方法</span></div><div class="line">        Object obj = invocation.proceed();</div><div class="line">        System.out.println(<span class="string">"Please enjoy yourself!"</span>);</div><div class="line">        <span class="keyword">return</span> obj;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Spring直接使用AOP联盟所定义的 <strong>MethodInterceptor</strong> 作为环绕增强接口。该接口唯一的接口方法<code>invoke(MethodInvocation invocation) throws Throwable</code>，其中 <strong>MethodInvocation</strong> 不但封装目标方法及入参数组，还封装了目标方法所在的实例对象。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">// spring3.xml代码片段</div><div class="line">...</div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"waiter"</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.framework.ProxyFactoryBean"</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"interfaces"</span> <span class="attr">value</span>=<span class="string">"com.hhxs.bbt.advice.Waiter"</span> /&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"target"</span> <span class="attr">ref</span>=<span class="string">"naiveWaiter"</span> /&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"interceptorNames"</span>&gt;</span></div><div class="line">			<span class="tag">&lt;<span class="name">list</span>&gt;</span></div><div class="line">				<span class="tag">&lt;<span class="name">value</span>&gt;</span>greetingInterceptor<span class="tag">&lt;/<span class="name">value</span>&gt;</span></div><div class="line">			<span class="tag">&lt;/<span class="name">list</span>&gt;</span></div><div class="line">		<span class="tag">&lt;/<span class="name">property</span>&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line">...</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AroundAdviceClient</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        ApplicationContext context = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"spring/advice/spring3.xml"</span>);</div><div class="line">        Waiter waiter = (Waiter) context.getBean(<span class="string">"waiter"</span>);</div><div class="line">        waiter.greetTo(<span class="string">"张三"</span>);</div><div class="line">        waiter.serveTo(<span class="string">"李四"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="异常抛出增强"><a href="#异常抛出增强" class="headerlink" title="异常抛出增强"></a>异常抛出增强</h3><p>异常抛出增强最合适的应用场景是事务管理，当参与事务的某个Dao发生异常时，事务管理器就必须回滚事务。</p>
+<p>ThrowsAdvice异常抛出增强接口没有定义任何方法，它是一个 <strong>标识接口</strong>，在运行期Spring使用反射的机制自行判断，但必须采用以下签名形式定义异常抛出的增强方法：<code>void afterThrowing([Method method, Object[] args, Object target], Throwable)</code>，方法名必须为 <strong>afterThrowing</strong>，方法入参规定：前三个入参<code>Method method</code>, <code>Object[] args</code>, <code>Object target</code>要么都提供，要么都不提供，而最后一个入参是Throwable或其子类。</p>
+<blockquote>
+<p>标识接口是没有任何方法和属性的接口，标识接口不对实现类有任何语义上的要求，仅仅表明它的实现类属于一个特定的类型。它非常类似Web2.0中TAG的概念，Java使用它标识某一类对象。主要有两个用途：第一，通过标识接口标识同一类型的类，这些类本身可能并没有具有相同的方法，如Advice接口；第二，通过标识接口使程序或JVM采取一些特殊处理，如<code>java.io.Serializable</code>，它告诉JVM对象可以被序列化。</p>
+</blockquote>
+<h3 id="引介增强"><a href="#引介增强" class="headerlink" title="引介增强"></a>引介增强</h3><p> <a name="anchor"></a>引介增强是一种比较特殊的增强类型，它不是在目标方法周围织入增强，而是为目标类创建新的方法和属性，所以引介增强的连接点是类级别的。</p>
+<p>Spring定义了引介增强接口 <strong>IntroductionInterceptor</strong>，该接口没有定义任何的方法，Spring为该接口提供了 <strong>DelegatingIntroductionInterceptor</strong>实现类，一般情况下，我们通过扩展该实现类定义自己的引介增强类。下面通过对上一篇文章<a href="http://haoyiru.com/2017/11/22/Spring3.X%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B05-SpringAOP%E5%9F%BA%E7%A1%80/#more" target="_blank" rel="external">SpringAOP基础</a>里的性能监视例子进行改造，实现业务类性能监视功能的激活和关闭。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Monitorable</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setMonitorActive</span><span class="params">(<span class="keyword">boolean</span> active)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> org.aopalliance.intercept.MethodInvocation;</div><div class="line"><span class="keyword">import</span> org.springframework.aop.support.DelegatingIntroductionInterceptor;</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ControllablePerformanceMonitor</span> <span class="keyword">extends</span> <span class="title">DelegatingIntroductionInterceptor</span> <span class="keyword">implements</span> <span class="title">Monitorable</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">1L</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> ThreadLocal&lt;Boolean&gt; monitorStatusMap = <span class="keyword">new</span> ThreadLocal&lt;Boolean&gt;();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(MethodInvocation mi)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">        Object obj = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">if</span>(monitorStatusMap.get() != <span class="keyword">null</span> &amp;&amp; monitorStatusMap.get()) &#123;</div><div class="line">            PerformanceMonitor.begin(mi.getClass().getName() + <span class="string">"."</span> + mi.getMethod().getName());</div><div class="line">            obj = <span class="keyword">super</span>.invoke(mi);</div><div class="line">            PerformanceMonitor.end();</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            obj = <span class="keyword">super</span>.invoke(mi);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> obj;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMonitorActive</span><span class="params">(<span class="keyword">boolean</span> active)</span> </span>&#123;</div><div class="line">        monitorStatusMap.set(active);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">// beans.xml代码片段</div><div class="line">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></div><div class="line"><span class="tag">	<span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="attr">xmlns:p</span>=<span class="string">"http://www.springframework.org/schema/p"</span></span></div><div class="line"><span class="tag">	<span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></span></div><div class="line"><span class="tag"><span class="string">     http://www.springframework.org/schema/beans/spring-beans-3.1.xsd"</span>&gt;</span></div><div class="line"></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"pmonitor"</span> <span class="attr">class</span>=<span class="string">"com.hhxs.bbt.introduce.ControllablePerformanceMonitor"</span> /&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"forumServiceTarget"</span> <span class="attr">class</span>=<span class="string">"com.hhxs.bbt.introduce.ForumService"</span> /&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"forumService"</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.framework.ProxyFactoryBean"</span></span></div><div class="line">		p:interfaces="com.iflytek.bbt.introduce.Monitorable" &lt;!-- 引介增强所实现的接口--&gt;</div><div class="line">		p:target-ref="forumServiceTarget"</div><div class="line">		p:interceptorNames="pmonitor"</div><div class="line">		p:proxyTargetClass="true"  /&gt; <span class="comment">&lt;!-- 引介增强只能通过目标类创建子类的方式生成引介增强的代理 --&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestIntroduce</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"com/hhxs/bbt/introduce/beans.xml"</span>);</div><div class="line">        ForumService forumService = (ForumService) ctx.getBean(<span class="string">"forumService"</span>);</div><div class="line">        forumService.removeForum(<span class="number">10</span>);</div><div class="line">        forumService.removeTopic(<span class="number">1024</span>);</div><div class="line"></div><div class="line">        Monitorable monitorable = (Monitorable) forumService;</div><div class="line">        monitorable.setMonitorActive(<span class="keyword">true</span>);</div><div class="line">        forumService.removeForum(<span class="number">10</span>);</div><div class="line">        forumService.removeTopic(<span class="number">1024</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="SpringAop的切面类型"><a href="#SpringAop的切面类型" class="headerlink" title="SpringAop的切面类型"></a>SpringAop的切面类型</h2><p>通过前面的学习，我们知道增强只提供了连接点的方位信息：如织入到方法前面，后面等，而切点进一步描述了织入到哪些类的哪些方法上。</p>
+<p>Spring通过<code>org.springframework.aop.Pointcut</code>接口描述切点，<strong>Pointcut</strong> 由 <em>ClassFilter</em> 和 <em>MethodMatcher</em> 构成，它通过 <em>ClassFilter</em> 定位到某些特定类上，通过 <em>MethodMatcher</em> 定位到某些特定方法上。</p>
+<p>Spring使用<code>org.springframework.aop.Advisor</code>接口表示切面的概念，一个切面同时包含横切代码和连接点信息。切面可以分为三类：一般切面、切点切面和引介切面。</p>
+<ul>
+<li><strong>Advisor：</strong> 代表一般切面，它仅包含一个Advice。Advice代表的横切连接点是所有目标类的所有方法，因为这个横切面太宽泛，所以很少使用；</li>
+<li><strong>PointcutAdvisor：</strong> 代表具有切点的切面，它包含Advice和Pointcut两个类，这样就可以通过类、方法名以及方位等信息灵活地定义切面的连接点，提供更具适用性的切面；</li>
+<li><strong>IntroductionAdvisor：</strong> 代表引介切面，引介切面是对应引介增强的特殊的切面，它应用于类层面上，所以引介切点适用 <em>ClassFilter</em> 进行定义。</li>
+</ul>
+<p><strong>  下面看下PointcutAdvisor的6个具体实现类：</strong></p>
+<ul>
+<li><strong>DefaultPointAdvisor：</strong> 最常用的切面类型，它可以通过任意Pointcut和Advice定义一个切面，唯一不支持的是引介的切面类型；</li>
+<li><strong>NameMatchMethodPointcutAdvisor：</strong> 通过该类可以定义按方法名定义切点的切面；</li>
+<li><strong>RegexpMethodPointcutAdvisor：</strong> 对于按正则表达式匹配方法名进行切点定义的切面，可以通过扩展该实现类进行操作；。<strong>RegexpMethodPointcutAdvisor</strong> 内部通过 <em>JdkRegexpMethodPointcut</em> 构造出正则表达式方法名切点；</li>
+<li><strong>StaticMethodMatcherPointcutAdvisor：</strong> 静态方法匹配器切点定义的切面，默认匹配所有的目标类；</li>
+<li><strong>AspectJExpressionPointcutAdvisor：</strong> 用于AspectJ切点表达式定义切点的切面，它是Spring 2.0新提供的类；</li>
+<li><strong>AspectJPointcutAdvisor：</strong> 用于AspectJ语法定义切点的切面，它是Spring 2.0新提供的类。</li>
+</ul>
+<hr>
+<p><strong>下面我们通过实例来了解下具体用法：</strong></p>
+<h3 id="静态普通方法名匹配切面"><a href="#静态普通方法名匹配切面" class="headerlink" title="静态普通方法名匹配切面"></a>静态普通方法名匹配切面</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Component</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Waiter</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">greetTo</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"waiter greet to "</span> + name + <span class="string">"..."</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">serverTo</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"waiter serving "</span> + name + <span class="string">"..."</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Component</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Seller</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">greetTo</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"seller greet to "</span> + name + <span class="string">"..."</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Seller拥有一个和Waiter相同名称的方法greetTo()。现在希望通过 <strong>StaticMethodMatcherPointcutAdvisor</strong> 定义一个切面，在Waiter#greetTo()方法调用前织入一个增强。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 切面类代码</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GreetingAdvisor</span> <span class="keyword">extends</span> <span class="title">StaticMethodMatcherPointcutAdvisor</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">1L</span>;</div><div class="line"></div><div class="line">    <span class="comment">// 切点方法匹配规则：方法名为greetTo</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(Method method, Class&lt;?&gt; targetClass)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"greetTo"</span>.equals(method.getName());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 切点类匹配规则：为Waiter的类或子类</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> ClassFilter <span class="title">getClassFilter</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ClassFilter() &#123;</div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(Class&lt;?&gt; clazz)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> Waiter.class.isAssignableFrom(clazz);</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>因为 <strong>StaticMethodMatcherPointcutAdvisor</strong> 抽象类唯一需要定义的是 <em>matches()</em> 方法。默认情况下匹配所有类，我们可以通过覆盖 <em>getClassFilter()</em> 方法，让它仅匹配Waiter类及其子类。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 增强类</span></div><div class="line"><span class="meta">@Component</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GreetingBeforeAdvice</span> <span class="keyword">implements</span> <span class="title">MethodBeforeAdvice</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before</span><span class="params">(Method method, Object[] args, Object target)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">        System.out.println(target.getClass().getName() + <span class="string">"."</span> + method.getName());</div><div class="line">        String clientName = (String) args[<span class="number">0</span>];</div><div class="line">        System.out.println(<span class="string">"How are you! Mr. "</span> + clientName + <span class="string">"."</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><a name="anchor2"></a><br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">// beans.xml 配置切面: 静态方法匹配切面</div><div class="line">...</div><div class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">"com.hhxs.bbt.advisor"</span> /&gt;</span></div><div class="line"><span class="comment">&lt;!-- 向切面注入一个前置增强 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"greetingAdvisor"</span> <span class="attr">class</span>=<span class="string">"com.hhxs.bbt.advisor.GreetingAdvisor"</span></span></div><div class="line"><span class="tag">	  <span class="attr">p:advice-ref</span>=<span class="string">"greetingBeforeAdvice"</span> /&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"parent"</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.framework.ProxyFactoryBean"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:interceptorNames</span>=<span class="string">"greetingAdvisor"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:proxyTargetClass</span>=<span class="string">"true"</span> /&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"waiter_c"</span> <span class="attr">parent</span>=<span class="string">"parent"</span> <span class="attr">p:target-ref</span>=<span class="string">"waiter"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"seller_c"</span> <span class="attr">parent</span>=<span class="string">"parent"</span> <span class="attr">p:target-ref</span>=<span class="string">"seller"</span>/&gt;</span></div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p><strong>StaticMethodMatcherPointcutAdvisor</strong> 除了advice属性外，还可以定义另外两个属性：</p>
+<ul>
+<li><strong>classFilter：</strong> 类匹配过滤器，在GreetingAdvisor中，我们用编码的方式设定了classFilter；</li>
+<li><strong>order：</strong> 切面织入时的顺序，该属性用于定义Orderd接口标识的顺序。<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestStaticMethodAdvisor</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;        </div><div class="line">        ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"com/hhxs/bbt/advisor/beans.xml"</span>);</div><div class="line">        Waiter waiter = (Waiter) ctx.getBean(<span class="string">"waiter_c"</span>);</div><div class="line">        Seller seller = (Seller) ctx.getBean(<span class="string">"seller_c"</span>);</div><div class="line">        waiter.greetTo(<span class="string">"John"</span>);</div><div class="line">        waiter.serverTo(<span class="string">"John"</span>);</div><div class="line">        seller.greetTo(<span class="string">"John"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><em><strong>运行以上代码，输出一下信息：</strong></em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">com.hhxs.bbt.advisor.Waiter.greetTo</div><div class="line">How are you! Mr. John.</div><div class="line">waiter greet to John...</div><div class="line">waiter serving John...</div><div class="line">seller greet to John...</div></pre></td></tr></table></figure></p>
+<h3 id="静态正则表达式方法匹配切面"><a href="#静态正则表达式方法匹配切面" class="headerlink" title="静态正则表达式方法匹配切面"></a>静态正则表达式方法匹配切面</h3><p> <a name="anchor1"></a>在 <strong>StaticMethodMatcherPointcutAdvisor</strong> 中，我们仅能通过方法名定义切点，这种描述方式不够灵活。假设目标类中有多个方法，且它们都满足一定的命名规范，若能使用正则表达式进行匹配描述就灵活的多了。<strong>RegexpMethodPointcutAdvisor</strong> 是正则表达式方法匹配的切面实现类，需要注意的是：<em>匹配模式串匹配的是目标类方法的全限定名，即带类名的方法名</em>。下面我们用这个实现类对上面的实例进行改写：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">"com.hhxs.bbt.advisor"</span> /&gt;</span></div><div class="line"></div><div class="line">	<span class="comment">&lt;!-- 向切面注入一个前置增强 --&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"greetingAdvisor"</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.support.RegexpMethodPointcutAdvisor"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:advice-ref</span>=<span class="string">"greetingBeforeAdvice"</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"patterns"</span>&gt;</span></div><div class="line">			<span class="tag">&lt;<span class="name">list</span>&gt;</span></div><div class="line">				<span class="tag">&lt;<span class="name">value</span>&gt;</span>.*greet.*<span class="tag">&lt;/<span class="name">value</span>&gt;</span></div><div class="line">			<span class="tag">&lt;/<span class="name">list</span>&gt;</span></div><div class="line">		<span class="tag">&lt;/<span class="name">property</span>&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line"></div><div class="line">	<span class="comment">&lt;!-- 通过父&lt;bean&gt;定义公共配置信息 --&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"parent"</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.framework.ProxyFactoryBean"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:interceptorNames</span>=<span class="string">"greetingAdvisor"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:proxyTargetClass</span>=<span class="string">"true"</span> /&gt;</span></div><div class="line"></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"waiter_c"</span> <span class="attr">parent</span>=<span class="string">"parent"</span> <span class="attr">p:target-ref</span>=<span class="string">"waiter"</span>/&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"seller_c"</span> <span class="attr">parent</span>=<span class="string">"parent"</span> <span class="attr">p:target-ref</span>=<span class="string">"seller"</span>/&gt;</span></div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p><em><strong>运行以上代码，输出一下信息：</strong></em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">com.hhxs.bbt.advisor.Waiter.greetTo</div><div class="line">How are you! Mr. John.</div><div class="line">waiter greet to John...</div><div class="line">waiter serving John...</div><div class="line">com.hhxs.bbt.advisor.Seller.greetTo</div><div class="line">How are you! Mr. John.</div><div class="line">seller greet to John...</div></pre></td></tr></table></figure></p>
+<p><strong>PS：</strong> 除了例子中所使用的 <em>patterns</em> 和 <em>advice</em> 两属性外，还有另外两个属性：</p>
+<ul>
+<li><strong>pattern：</strong> 如果只有一个匹配模式串，可以使用该属性进行配置，patterns属性用于定义多个匹配模式串，这些匹配模式串之间是 <em>“或的关系”</em>；</li>
+<li><strong>order：</strong> 切面在织入时对应的顺序。</li>
+</ul>
+<h3 id="动态切面"><a href="#动态切面" class="headerlink" title="动态切面"></a>动态切面</h3><p>在低版本中，Spring提供了用于创建动态切面的 <em>DynamicMethodMatcherPointcutAdvisor</em> 抽象类，因为该类在功能上和其他类有重叠，目前已过期。我们可以使用 <strong>DefaultPointcutAdvisor</strong> 和 <strong>DynamicMethodMatcherPointcut</strong> 来完成相同的功能。下面直接看例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Component</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GreetingDynamicPointcut</span> <span class="keyword">extends</span> <span class="title">DynamicMethodMatcherPointcut</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> List&lt;String&gt; specialClientList = <span class="keyword">new</span> ArrayList&lt;String&gt;();</div><div class="line"></div><div class="line">    <span class="keyword">static</span> &#123;</div><div class="line">        specialClientList.add(<span class="string">"John"</span>);</div><div class="line">        specialClientList.add(<span class="string">"Tom"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> ClassFilter <span class="title">getClassFilter</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ClassFilter() &#123;</div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(Class&lt;?&gt; clazz)</span> </span>&#123;</div><div class="line">                System.out.println(<span class="string">"调用getClassFilter()对"</span> + clazz.getName() + <span class="string">"做静态检查."</span>);</div><div class="line">                <span class="keyword">return</span> Waiter.class.isAssignableFrom(clazz);</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(Method method, Class&lt;?&gt; targetClass)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"调用matches(method, targetClass)"</span> + targetClass.getName() + <span class="string">"."</span> + method.getName() + <span class="string">"做静态检查."</span>);</div><div class="line">        <span class="keyword">return</span> <span class="string">"greetTo"</span>.equals(method.getName());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(Method method, Class&lt;?&gt; targetClass, Object[] args)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"调用matches(method, targetClass)"</span> + targetClass.getName() + <span class="string">"."</span> + method.getName() + <span class="string">"做动态检查."</span>);</div><div class="line">        String clientName = (String) args[<span class="number">0</span>];</div><div class="line">        <span class="keyword">return</span> specialClientList.contains(clientName);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>GreetingDynamicPointcut</strong> 类既有静态切点检查的方法，也有用于动态切点检查的方法。由于动态切点检查会对性能造成很大的影响，应当尽量避免在运行时每次都对目标类的各个方法进行动态检查。<strong><em>Spring采用这样的机制：在创建代理时对目标类的每个连接点使用静态切点检查，如果仅通过静态切点检查就可以知道连接点是不匹配的，则在运行时就不再进行动态检查了；如果静态切点检查是匹配的，在运行时才进行动态切点检查。</em></strong><br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">// dynamic_beans.xml 代码片段</div><div class="line">...</div><div class="line">  <span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">"com.hhxs.bbt.advisor"</span> /&gt;</span></div><div class="line"></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"dynamicAdvisor"</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.support.DefaultPointcutAdvisor"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:pointcut-ref</span>=<span class="string">"greetingDynamicPointcut"</span> <span class="attr">p:advice-ref</span>=<span class="string">"greetingBeforeAdvice"</span>&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line"></div><div class="line">	<span class="comment">&lt;!-- 通过父&lt;bean&gt;定义公共配置信息 --&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"waiter2"</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.framework.ProxyFactoryBean"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:interceptorNames</span>=<span class="string">"dynamicAdvisor"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:target-ref</span>=<span class="string">"waiter"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:proxyTargetClass</span>=<span class="string">"true"</span> /&gt;</span></div><div class="line">...</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 动态切面测试代码</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestDynamicAdvisor</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"com/hhxs/bbt/advisor/dynamic_beans.xml"</span>);</div><div class="line">        Waiter waiter = (Waiter) ctx.getBean(<span class="string">"waiter2"</span>);</div><div class="line">        waiter.serverTo(<span class="string">"Peter"</span>);</div><div class="line">        waiter.greetTo(<span class="string">"Peter"</span>);</div><div class="line">        waiter.serverTo(<span class="string">"John"</span>);</div><div class="line">        waiter.greetTo(<span class="string">"John"</span>);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p><em><strong>运行以上代码，在控制台输出一下信息：</strong></em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Spring在创建代理织入切面时，对目标类中所有方法进行静态切点检查</span></div><div class="line">调用getClassFilter()对com.hhxs.bbt.advisor.Waiter做静态检查.</div><div class="line">调用matches(method, targetClass)com.hhxs.bbt.advisor.Waiter.serverTo做静态检查.</div><div class="line">调用getClassFilter()对com.hhxs.bbt.advisor.Waiter做静态检查.</div><div class="line">调用matches(method, targetClass)com.hhxs.bbt.advisor.Waiter.greetTo做静态检查.</div><div class="line">调用getClassFilter()对com.hhxs.bbt.advisor.Waiter做静态检查.</div><div class="line">调用matches(method, targetClass)com.hhxs.bbt.advisor.Waiter.toString做静态检查.</div><div class="line">调用getClassFilter()对com.hhxs.bbt.advisor.Waiter做静态检查.</div><div class="line">调用matches(method, targetClass)com.hhxs.bbt.advisor.Waiter.clone做静态检查.</div><div class="line"><span class="comment">// 对应waiter.serverTo(“Peter”）: 第一次调用serverTo()方法时，执行静态</span></div><div class="line">调用getClassFilter()对com.hhxs.bbt.advisor.Waiter做静态检查.</div><div class="line">调用matches(method, targetClass)com.hhxs.bbt.advisor.Waiter.serverTo做静态检查.</div><div class="line">waiter serving Peter...</div><div class="line"><span class="comment">// 对应waiter.greetTo(“Peter”) : 第一次调用greetTo()时，执行静态动态检查</span></div><div class="line">调用getClassFilter()对com.hhxs.bbt.advisor.Waiter做静态检查.</div><div class="line">调用matches(method, targetClass)com.hhxs.bbt.advisor.Waiter.greetTo做静态检查.</div><div class="line">调用matches(method, targetClass)com.hhxs.bbt.advisor.Waiter.greetTo做动态检查.</div><div class="line">waiter greet to Peter...</div><div class="line"><span class="comment">// 对应waiter.serverTo("John") ：第二次调用serverTo()时，不在执行静态</span></div><div class="line">waiter serving John...</div><div class="line"><span class="comment">// 对应waiter.greetTo("John") ：第二次调用greetTo()时，只执行动态检查</span></div><div class="line">调用matches(method, targetClass)com.hhxs.bbt.advisor.Waiter.greetTo做动态检查.</div><div class="line">com.hhxs.bbt.advisor.Waiter.greetTo</div><div class="line">How are you! Mr. John.</div><div class="line">waiter greet to John...</div></pre></td></tr></table></figure></p>
+<p>在定义切点时，切勿忘记同时覆盖<code>getClassFilter()</code>和<code>matches(Method method， Class targetClass)</code>方法，通过静态切点检查可以排除掉大部分方法。</p>
+<p><em><strong>最后要说明的是，在Spring中，不管是静态切面还是动态切面都是通过动态代理技术实现的。所谓静态切面是指在生成代理对象时，就确定了增强是否需要织入到目标类连接点上，而动态切面是指必须在运行期根据方法入参的值来判断增强是否织入到目标类连接点上。</strong></em></p>
+<h3 id="流程切面"><a href="#流程切面" class="headerlink" title="流程切面"></a>流程切面</h3><p>Spring的流程切面由 <strong>DefaultPointcutAdvisor</strong> 和 <strong>ControlFlowPointcut</strong> 实现。流程切点代表由某个方法直接或间接发起调用的其他方法。来看下面的实例，我们通过一个WaiterDelegat类代理Waiter所有的方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WaiterDelegate</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Waiter waiter;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">service</span><span class="params">(String clientName)</span> </span>&#123;</div><div class="line">        waiter.greetTo(clientName);</div><div class="line">        waiter.serverTo(clientName);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setWaiter</span><span class="params">(Waiter waiter)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.waiter = waiter;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>假设我们需要实现所有由WaiterDelegate#service()方法发起调用的其他方法都织入GreetingBeforeAdvice增强，就必须使用流程切面来完成目标。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">// controlflow_beans.xml 代码片段</div><div class="line">...</div><div class="line">  <span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">"com.hhxs.bbt.advisor"</span> /&gt;</span></div><div class="line"></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"controlFlowPointcut"</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.support.ControlFlowPointcut"</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">type</span>=<span class="string">"java.lang.Class"</span> <span class="attr">value</span>=<span class="string">"com.hhxs.bbt.advisor.WaiterDelegate"</span>/&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">type</span>=<span class="string">"java.lang.String"</span> <span class="attr">value</span>=<span class="string">"service"</span>/&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line"></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"controlFlowAdvisor"</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.support.DefaultPointcutAdvisor"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:pointcut-ref</span>=<span class="string">"controlFlowPointcut"</span> <span class="attr">p:advice-ref</span>=<span class="string">"greetingBeforeAdvice"</span>&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line"></div><div class="line">	<span class="comment">&lt;!-- 通过父&lt;bean&gt;定义公共配置信息 --&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"waiter3"</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.framework.ProxyFactoryBean"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:interceptorNames</span>=<span class="string">"controlFlowAdvisor"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:target-ref</span>=<span class="string">"waiter"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:proxyTargetClass</span>=<span class="string">"true"</span> /&gt;</span></div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>ControlFlowPointcut有两个构造函数，分别是<code>ControlFlowPointcut(Class clazz)</code>和<code>ControlFlowPointcut(Class clazz, String methodName)</code>。第一个构造函数指定一个类作为流程切点；第二个构造函数指定一个类和某一个方法作为流程切点。</p>
+<p>在这里，我们指定<code>WaiterDelegate#service()</code>方法作为切点，表示所有通过该方法直接或间接发起的调用匹配切点。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestControlFlowAdvisor</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"com/hhxs/bbt/advisor/controlflow_beans.xml"</span>);</div><div class="line">        Waiter waiter = (Waiter) ctx.getBean(<span class="string">"waiter3"</span>);</div><div class="line">        WaiterDelegate wd = <span class="keyword">new</span> WaiterDelegate();</div><div class="line">        wd.setWaiter(waiter);</div><div class="line">        waiter.serverTo(<span class="string">"John"</span>);</div><div class="line">        waiter.greetTo(<span class="string">"John"</span>);</div><div class="line">        wd.service(<span class="string">"John"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">waiter serving John...</div><div class="line">waiter greet to John...</div><div class="line">com.hhxs.bbt.advisor.Waiter.greetTo</div><div class="line">How are you! Mr. John.</div><div class="line">waiter greet to John...</div><div class="line">com.hhxs.bbt.advisor.Waiter.serverTo</div><div class="line">How are you! Mr. John.</div><div class="line">waiter serving John...</div></pre></td></tr></table></figure>
+<p>对于流程切面来说，代理对象在每次调用目标类方法时，都需要判断方法调用堆栈中是否满足流程切点的要求。因此，和动态切面一样，流程切面对性能的影响也很大。</p>
+<h3 id="复合切点切面"><a href="#复合切点切面" class="headerlink" title="复合切点切面"></a>复合切点切面</h3><p>在前面的例子中，我们所定义的切面仅有一个切点，有时，一个切点可能难以描述目标连接点的信息。比如上面流程切点的例子中，假如我们希望由<code>WaiterDelegate#service()</code>发起调用且被调用的方法是<code>Waiter#greetTo()</code>时才织入增强，这个切点就是复合切点。Spring为我们提供了 <strong>ComposablePointCut</strong>，可以将多个切点以并集或交集的方式组合起来，提供起点之间复合运算功能。<br>下面，我们通过 <strong>ComposablePointcut</strong> 创建一个流程切点和方法名切点的相交切点，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Component</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GreetingComposablePointcut</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> Pointcut <span class="title">getIntersectionPointcut</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// 创建一个复合切点</span></div><div class="line">        ComposablePointcut cp = <span class="keyword">new</span> ComposablePointcut();</div><div class="line">        <span class="comment">// 创建一个流程切点</span></div><div class="line">        Pointcut pt1 = <span class="keyword">new</span> ControlFlowPointcut(WaiterDelegate.class,<span class="string">"service"</span>);</div><div class="line">        <span class="comment">// 创建一个方法名切点</span></div><div class="line">        NameMatchMethodPointcut pt2 = <span class="keyword">new</span> NameMatchMethodPointcut();</div><div class="line">        pt2.addMethodName(<span class="string">"greetTo"</span>);</div><div class="line">        <span class="keyword">return</span> cp.intersection(pt1).intersection((Pointcut)pt2);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">// composable_beans.xml 代码片段</div><div class="line">...</div><div class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">"com.hhxs.bbt.advisor"</span> /&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"composableAdvisor"</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.support.DefaultPointcutAdvisor"</span></span></div><div class="line"><span class="tag">  <span class="attr">p:pointcut</span>=<span class="string">"#&#123;greetingComposablePointcut.intersectionPointcut&#125;"</span> <span class="attr">p:advice-ref</span>=<span class="string">"greetingBeforeAdvice"</span> /&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 通过父&lt;bean&gt;定义公共配置信息 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"waiter4"</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.framework.ProxyFactoryBean"</span></span></div><div class="line"><span class="tag">  <span class="attr">p:interceptorNames</span>=<span class="string">"composableAdvisor"</span> <span class="attr">p:target-ref</span>=<span class="string">"waiter"</span></span></div><div class="line"><span class="tag">  <span class="attr">p:proxyTargetClass</span>=<span class="string">"true"</span> /&gt;</span></div><div class="line">...</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestComposableAdvisor</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;        </div><div class="line">        ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"com/hhxs/bbt/advisor/composable_beans.xml"</span>);</div><div class="line">        Waiter waiter = (Waiter) ctx.getBean(<span class="string">"waiter4"</span>);</div><div class="line">        WaiterDelegate wd = <span class="keyword">new</span> WaiterDelegate();</div><div class="line">        wd.setWaiter(waiter);</div><div class="line">        waiter.serverTo(<span class="string">"Peter"</span>);</div><div class="line">        waiter.greetTo(<span class="string">"Peter"</span>);</div><div class="line">        wd.service(<span class="string">"Peter"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><em><strong>运行以上代码，在控制台输出一下信息：</strong></em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">waiter serving Peter...</div><div class="line">waiter greet to Peter...</div><div class="line">com.hhxs.bbt.advisor.Waiter.greetTo</div><div class="line">How are you! Mr. Peter.</div><div class="line">waiter greet to Peter...</div><div class="line">waiter serving Peter...</div></pre></td></tr></table></figure></p>
+<h3 id="引介切面"><a href="#引介切面" class="headerlink" title="引介切面"></a>引介切面</h3><p>引介切面是引介增强的封装器，通过引介切面，我们更容易为现有对象添加任何接口的实现。<em>IntroductionInfo</em> 描述了目标类需要实现的新接口。<em>IntroductionAdvisor</em> 有两个实现类，分别是 <strong>DefaultIntroductionAdvisor</strong> 和 <strong>DeclareParentsAdvisor</strong>，前者是引介切面最常用的实现类，而后者是Spring2.0新添的实现类，它用于实现使用AspectJ语言的DeclareParent注解表示的引介切面。<br><strong>DefulatIntroductionAdvisor拥有三个构造函数：</strong></p>
+<ul>
+<li><strong>DefaultIntroductionAdvisor(Advice advice)：</strong> 通过一个增强创建的引介切面，引介切面将为目标对象新增增强对象中所有接口的实现；</li>
+<li><strong>DefaultIntroductionAdvisor(DynamicIntroductionAdvice advice, Class clazz)：</strong> 通过一个增强和一个指定的接口类创建引介切面，仅为目标对象新增clazz接口的实现；</li>
+<li><strong>DefaultIntroductionAdvisor(Advice advice，IntroductionInfo introductionInfo)：</strong> 通过一个增强和一个IntroductionInfo创建一个引介切面，目标对象需要实现哪些接口，由introductionInfo对象的<code>getInterfaces()</code>表示。</li>
+</ul>
+<p>下面，我们通过DefaultIntroductionAdvisor为 <a href="#anchor"><em>前面的引介增强示例</em></a> 配置切面：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">// introduce_beans.xml 代码片段</div><div class="line">...</div><div class="line">  <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"pmonitor"</span> <span class="attr">class</span>=<span class="string">"com.hhxs.bbt.introduce.ControllablePerformanceMonitor"</span> /&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"forumServiceTarget"</span> <span class="attr">class</span>=<span class="string">"com.hhxs.bbt.introduce.ForumService"</span> /&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"forumService"</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.framework.ProxyFactoryBean"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:interfaces</span>=<span class="string">"com.hhxs.bbt.introduce.Monitorable"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:target-ref</span>=<span class="string">"forumServiceTarget"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:interceptorNames</span>=<span class="string">"pmonitor"</span></span></div><div class="line"><span class="tag">		<span class="attr">p:proxyTargetClass</span>=<span class="string">"true"</span> /&gt;</span></div><div class="line">...</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestIntroduceAdvisor</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"com/hhxs/bbt/advisor/introduce_beans.xml"</span>);</div><div class="line">        ForumService forumService = (ForumService) ctx.getBean(<span class="string">"forumService"</span>);</div><div class="line">        forumService.removeForum(<span class="number">10</span>);</div><div class="line">        forumService.removeTopic(<span class="number">1024</span>);</div><div class="line"></div><div class="line">        Monitorable monitorable = (Monitorable) forumService;</div><div class="line">        monitorable.setMonitorActive(<span class="keyword">true</span>);</div><div class="line">        forumService.removeForum(<span class="number">10</span>);</div><div class="line">        forumService.removeTopic(<span class="number">1024</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="自动代理"><a href="#自动代理" class="headerlink" title="自动代理"></a>自动代理</h2><p>在前面的例子中，可以看出，每一个需要被代理的 <em>Bean</em> 都需要使用一个 <em>ProxyFactoryBean</em> 进行配置，为每一个目标类手工配置一个切面是比较繁琐的。幸运的是，Spring为我们提供了自动代理机制，让容器为我们自动生成代理。</p>
+<p>Spring使用 <strong>BeanPostProcessor</strong> 来完成这项工作。基于 <strong>BeanPostProcessor</strong> 的自动代理创建器的实现类，将根据一些规则自动在容器实例化Bean时为匹配的Bean生成代理实例。这些代理创建器可以分为以下三类：</p>
+<ul>
+<li><strong>基于Bean配置名规则的自动代理创建器：</strong> 允许为一组特定配置名的Bean自动创建代理实例的代理创建器，实现类为 <em>BeanNameAutoProxyCreator</em>；</li>
+<li><strong>基于Advisor匹配机制的自动代理创建器：</strong> 它会对容器中所有的Advisor进行扫描，自动将这些切面应用到匹配的Bean中，实现类为 <em>DefaultAdvisorAutoProxyCreator</em>；</li>
+<li><strong>基于Bean中AspjectJ注解标签的自动代理创建器：</strong> 为包含AspectJ注解的Bean自动创建代理实例，它的实现类是 <em>AnnotationAwareAspectJAutoProxyCreator</em>，该类是Spring2.0的新增类。</li>
+</ul>
+<h3 id="BeanNameAutoProxyCreator"><a href="#BeanNameAutoProxyCreator" class="headerlink" title="BeanNameAutoProxyCreator"></a>BeanNameAutoProxyCreator</h3><p>在<a href="#anchor1">静态正则表达式方法匹配切面</a>中，通过配置两个ProxyFactoryBean分别为waiter和seller的Bean创建代理对象。下面，我们通过BeanNameAutoProxyCreator来完成相同功能：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">  &lt;context:component-scan base-package=&quot;com.hhxs.bbt.advisor&quot; /&gt;</div><div class="line"></div><div class="line">	&lt;bean class=&quot;org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator&quot;</div><div class="line">		p:beanNames=&quot;*er&quot;</div><div class="line">		p:interceptorNames=&quot;greetingBeforeAdvice&quot;</div><div class="line">		p:optimize=&quot;true&quot; /&gt;</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>BeanNameAutoProxyCreator有一个beanNames属性，它允许用户指定一组需要自动代理Bean名称，Bean名称可以使用<code>*</code>通配符。当然使用通配符会带来一定风险，在上面的例子中，假设一个其他的Bean名称以“er”结尾，则自动代理创建器也会为该Bean创建代理。所以，保险的方式是直接使用beanid，如value=”waiter，seller”。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBeanNameAutoProxyCreator</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;        </div><div class="line">        ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"com/hhxs/bbt/autoproxy/beans.xml"</span>);</div><div class="line">        Waiter waiter = (Waiter) ctx.getBean(<span class="string">"waiter"</span>);</div><div class="line">        Seller seller = (Seller) ctx.getBean(<span class="string">"seller"</span>);</div><div class="line">        waiter.greetTo(<span class="string">"John"</span>);</div><div class="line">        waiter.serverTo(<span class="string">"John"</span>);</div><div class="line">        seller.greetTo(<span class="string">"John"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><em><strong>运行以上代码，在控制台输出一下信息：</strong></em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">com.hhxs.bbt.advisor.Waiter.greetTo</div><div class="line">How are you! Mr. John.</div><div class="line">waiter greet to John...</div><div class="line">com.hhxs.bbt.advisor.Waiter.serverTo</div><div class="line">How are you! Mr. John.</div><div class="line">waiter serving John...</div><div class="line">com.hhxs.bbt.advisor.Seller.greetTo</div><div class="line">How are you! Mr. John.</div><div class="line">seller greet to John...</div></pre></td></tr></table></figure></p>
+<h3 id="DefaultAdvisorAutoProxyCreator"><a href="#DefaultAdvisorAutoProxyCreator" class="headerlink" title="DefaultAdvisorAutoProxyCreator"></a>DefaultAdvisorAutoProxyCreator</h3><p>DefaultAdvisorAutoProxyCreator能够扫描容器中的Advisor，并将Advisor自动织入到匹配的目标Bean中，即为匹配的目标Bean自动创建代理。</p>
+<p>在<a href="#anchor2">静态方法匹配切面</a>中，我们通过ProxyFactoryBean为waiter配置了代理，在这里，我们引入DefaultAdvisorAutoProxyCreator为容器中所有带“greet”方法名的目标Bean自动创建代理：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">// beans.xml代码片段</div><div class="line">...</div><div class="line"><span class="comment">&lt;!--通过Advisor自动创建代理--&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"regexpAdvisor"</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.support.RegexpMethodPointcutAdvisor"</span></span></div><div class="line"><span class="tag">  <span class="attr">p:patterns</span>=<span class="string">".*greet.*"</span> <span class="attr">p:advice-ref</span>=<span class="string">"greetingBeforeAdvice"</span> /&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"</span> /&gt;</span></div><div class="line">...</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBeanNameAutoProxyCreator</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;        </div><div class="line">        ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"com/hhxs/bbt/autoproxy/beans.xml"</span>);</div><div class="line">        Waiter waiter = (Waiter) ctx.getBean(<span class="string">"waiter"</span>);</div><div class="line">        Seller seller = (Seller) ctx.getBean(<span class="string">"seller"</span>);</div><div class="line">        waiter.greetTo(<span class="string">"John"</span>);</div><div class="line">        waiter.serverTo(<span class="string">"John"</span>);</div><div class="line">        seller.greetTo(<span class="string">"John"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><em><strong>运行以上代码，在控制台输出一下信息：</strong></em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">com.hhxs.bbt.advisor.Waiter.greetTo</div><div class="line">How are you! Mr. John.</div><div class="line">waiter greet to John...</div><div class="line">waiter serving John...</div><div class="line">com.hhxs.bbt.advisor.Seller.greetTo</div><div class="line">How are you! Mr. John.</div><div class="line">seller greet to John...</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AOP/" rel="tag"><i class="fa fa-tag"></i> AOP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/22/Maven Profile 和 Spring profile/" rel="next" title="Maven Profile和Spring Proflie">
+                <i class="fa fa-chevron-left"></i> Maven Profile和Spring Proflie
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTQyOC83OTky"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="/images/touxiang.png"
+              alt="zqhao" />
+          
+            <p class="site-author-name" itemprop="name">zqhao</p>
+            <p class="site-description motion-element" itemprop="description">最好的期待，是我相信你。</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zqhao" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>GitHub</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2072589562/profile" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>微博</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/c9692c44b55e" target="_blank" title="简书">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>简书</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:hzqiangmac@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/hzygcs" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringAop的增强类型"><span class="nav-number">1.</span> <span class="nav-text">SpringAop的增强类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前置增强"><span class="nav-number">1.1.</span> <span class="nav-text">前置增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后置增强"><span class="nav-number">1.2.</span> <span class="nav-text">后置增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#环绕增强"><span class="nav-number">1.3.</span> <span class="nav-text">环绕增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异常抛出增强"><span class="nav-number">1.4.</span> <span class="nav-text">异常抛出增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引介增强"><span class="nav-number">1.5.</span> <span class="nav-text">引介增强</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringAop的切面类型"><span class="nav-number">2.</span> <span class="nav-text">SpringAop的切面类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#静态普通方法名匹配切面"><span class="nav-number">2.1.</span> <span class="nav-text">静态普通方法名匹配切面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#静态正则表达式方法匹配切面"><span class="nav-number">2.2.</span> <span class="nav-text">静态正则表达式方法匹配切面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动态切面"><span class="nav-number">2.3.</span> <span class="nav-text">动态切面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流程切面"><span class="nav-number">2.4.</span> <span class="nav-text">流程切面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复合切点切面"><span class="nav-number">2.5.</span> <span class="nav-text">复合切点切面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引介切面"><span class="nav-number">2.6.</span> <span class="nav-text">引介切面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自动代理"><span class="nav-number">3.</span> <span class="nav-text">自动代理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BeanNameAutoProxyCreator"><span class="nav-number">3.1.</span> <span class="nav-text">BeanNameAutoProxyCreator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DefaultAdvisorAutoProxyCreator"><span class="nav-number">3.2.</span> <span class="nav-text">DefaultAdvisorAutoProxyCreator</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright" >
+  
+  &copy;  2017 &mdash; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqhao</span>
+
+  
+</div>
+
+
+
+
+  <div class="theme-info">YIRU'S HOME</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="powered-by">
+    <i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  访客数:<span id="busuanzi_value_site_uv"></span></span>
+  </div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="powered-by">
+    <i class="fa fa-read-md"></i><span id="busuanzi_container_site_pv">
+  访问量:<span id="busuanzi_value_site_pv"></span></span>
+  </div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("01AlEf5rUjIHVKeg3JV5or4z-gzGzoHsz", "lVeILtSiskvjNRJGtLhqspM0");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
