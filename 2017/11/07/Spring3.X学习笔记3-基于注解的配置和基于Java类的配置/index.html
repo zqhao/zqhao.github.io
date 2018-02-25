@@ -103,7 +103,7 @@
 <meta property="og:site_name" content="功不唐捐">
 <meta property="og:description" content="上一篇文章里我们主要介绍了基于XML Schemal的配置方式。本篇文章里将介绍另外两种提供Bean定义的方式，基于注解和基于Java类的配置。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-11-07T09:36:45.221Z">
+<meta property="og:updated_time" content="2018-02-12T07:57:23.261Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring3.X学习笔记3-基于注解和基于Java类的配置">
 <meta name="twitter:description" content="上一篇文章里我们主要介绍了基于XML Schemal的配置方式。本篇文章里将介绍另外两种提供Bean定义的方式，基于注解和基于Java类的配置。">
@@ -461,9 +461,9 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span>?&gt;</div><div class="line">&lt;beans xmlns=<span class="string">"http://www.springframework.org/schema/beans"</span></div><div class="line">	xmlns:xsi=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></div><div class="line">	xmlns:context=<span class="string">"http://www.springframework.org/schema/context"</span></div><div class="line">	xsi:schemaLocation=<span class="string">"http://www.springframework.org/schema/beans"</span></div><div class="line">	http:<span class="comment">//www.springframework.org/schema/beans/spring-beans-3.1.xsd</span></div><div class="line">	http:<span class="comment">//www.springframework.org/schema/context</span></div><div class="line">  http:<span class="comment">//www.springframework.org/schema/context/spring-context-3.1.xsd&gt;</span></div><div class="line">	&lt;description&gt;Spring公共配置 &lt;/description&gt;</div><div class="line"></div><div class="line">	&lt;!-- <span class="number">1</span>.扫描类包以应用注解定义的Bean --&gt;</div><div class="line">	&lt;context:component-scan base-<span class="keyword">package</span>=<span class="string">"com.hhxs.bbt"</span> /&gt;</div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure>
 <p>在上面<code>1</code>处通过<code>context</code>命名空间的compnent-scan的base-package属性指定一个需要扫描的基类包，Spring容器将会扫描这个基类包里的所有类，并从类的注解信息中获取Bean的定义信息。</p>
 <p>如果仅希望扫描特定的类而非基包下的所有类，那么可以使用<strong>resource-pattern</strong>属性过滤特定的类，如下所示：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;context:component-scan base-<span class="keyword">package</span>=<span class="string">"com.hhxs.bbt"</span> resource-pattern=<span class="string">"dao/*.class"</span>/&gt;</div></pre></td></tr></table></figure>
-<p>默认情况下<strong>resource-pattern</strong>属性的值为<code>**/*.class</code>，即基包里的所有类。这里我们设置为<code>dao/*.class</code>，则Spring仅会扫描基包里dao子包中的类。通过resource-pattern属性仅可按资源名称对基包中的类进行过滤，如果需要更详细的过滤，则需要用到<code>&lt;contex:component-scan&gt;</code>的过滤子元素：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;context:component-scan base-<span class="keyword">package</span>=<span class="string">"com.hhxs.bbt"</span>&gt;</div><div class="line">    &lt;context:include-filter type=<span class="string">"regex"</span> expression=<span class="string">"com.\hhxs.\bbt.*"</span>/&gt;</div><div class="line">    &lt;context:exclude-filter type=<span class="string">"aspectj"</span> expression=<span class="string">"com.hhxs.bbt..*Controller+"</span>/&gt;</div><div class="line">&lt;/context&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">"com.hhxs.bbt"</span> <span class="attr">resource-pattern</span>=<span class="string">"dao/*.class"</span>/&gt;</span></div></pre></td></tr></table></figure>
+<p>默认情况下<code>resource-pattern</code>属性的值为<code>**/*.class</code>，即基包里的所有类。这里我们设置为<code>dao/*.class</code>，则Spring仅会扫描基包里dao子包中的类。通过resource-pattern属性仅可按资源名称对基包中的类进行过滤，如果需要更详细的过滤，则需要用到<code>&lt;contex:component-scan&gt;</code>的过滤子元素：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">"com.hhxs.bbt"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">context:include-filter</span> <span class="attr">type</span>=<span class="string">"regex"</span> <span class="attr">expression</span>=<span class="string">"com.\hhxs.\bbt.*"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">context:exclude-filter</span> <span class="attr">type</span>=<span class="string">"aspectj"</span> <span class="attr">expression</span>=<span class="string">"com.hhxs.bbt..*Controller+"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">context</span>&gt;</span></div></pre></td></tr></table></figure>
 <ul>
 <li><code>&lt;context:include-filter&gt;</code>表示要包含的目标类</li>
 <li><code>&lt;context:exclude-filter&gt;</code>表示要排除在外的目标类</li>
@@ -728,7 +728,7 @@
             
               <a href="/archives">
             
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -739,7 +739,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -750,7 +750,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">15</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -840,8 +840,8 @@
         <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  &copy;  2017 &mdash; 
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
