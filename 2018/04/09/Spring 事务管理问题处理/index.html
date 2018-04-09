@@ -79,7 +79,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="SpringMVC,Hibernate4,Transaction," />
 
 
 
@@ -95,16 +95,18 @@
 
 
 
-<meta name="description" content="最好的期待，是我相信你。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="功不唐捐">
-<meta property="og:url" content="http://yoursite.com/categories/随笔/index.html">
+<meta name="description" content="前段时间在整理实习生培训材料，基于两个常用框架的演示实例。在搭建框架的过程中，遇到了事务不提交的问题。">
+<meta name="keywords" content="SpringMVC,Hibernate4,Transaction">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringMVC+Hibernate4事务不提交问题处理">
+<meta property="og:url" content="http://yoursite.com/2018/04/09/Spring 事务管理问题处理/index.html">
 <meta property="og:site_name" content="功不唐捐">
-<meta property="og:description" content="最好的期待，是我相信你。">
+<meta property="og:description" content="前段时间在整理实习生培训材料，基于两个常用框架的演示实例。在搭建框架的过程中，遇到了事务不提交的问题。">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-04-09T11:30:34.058Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="功不唐捐">
-<meta name="twitter:description" content="最好的期待，是我相信你。">
+<meta name="twitter:title" content="SpringMVC+Hibernate4事务不提交问题处理">
+<meta name="twitter:description" content="前段时间在整理实习生培训材料，基于两个常用框架的演示实例。在搭建框架的过程中，遇到了事务不提交的问题。">
 
 
 
@@ -134,13 +136,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/categories/随笔/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/04/09/Spring 事务管理问题处理/"/>
 
 
 
 
 
-  <title>分类: 随笔 | 功不唐捐</title>
+  <title>SpringMVC+Hibernate4事务不提交问题处理 | 功不唐捐</title>
   
 
 
@@ -159,7 +161,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -297,83 +299,236 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block category">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>随笔<small>分类</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/09/Spring 事务管理问题处理/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zqhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/touxiang.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="功不唐捐">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2017/09/21/使用Hexo在Github上搭建个人网站/" itemprop="url">
-              
-                <span itemprop="name">使用Hexo在Github上搭建个人Blog</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">SpringMVC+Hibernate4事务不提交问题处理</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-09-21T14:48:10+08:00"
-              content="2017-09-21" >
-          09-21
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-09T19:18:19+08:00">
+                2018-04-09
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring/" itemprop="url" rel="index">
+                    <span itemprop="name">Spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/04/09/Spring 事务管理问题处理/" class="leancloud_visitors" data-flag-title="SpringMVC+Hibernate4事务不提交问题处理">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  938 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  4 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
+      
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+      
+        <blockquote>
+<p>前段时间在整理实习生培训材料，基于两个常用框架的演示实例。在搭建框架的过程中，遇到了事务不提交的问题。</p>
+</blockquote>
+<a id="more"></a>
+<p>在实际工作中，每个项目组都有自己常用的开发框架，再加上分工协作，当新项目来的时候，如果架构没有什么大的变动，多数时候都是从原有项目里直接拖出一个框架。前段时间因工作原因在整理实习生培训材料，基于SSH和SSM框架的实例演示，由于想要保持干净的框架结构，所以特地对框架梳理了一番，将公司自带的一些jar包、配置等全部清除掉。</p>
+<p>清理完后，开始运行项目，运行正常，于是就默认框架搭建正常。然后着手开始编写演示实例，在运行实例代码过程中，发现了事务一直无法提交。一般这种情况肯定就是配置文件没配置好，所以立马就去检查Spring的配置，来回检查了好几遍也没有发现问题，和正常运行的项目也做了对比，仍然没发现问题。项目中一直使用的AOP自动注解，除了方法命名规范需要注意，防止扫描不到，需要注意的地方很少。于是想着先去掉AOP自动注解，使用扫描 <strong>@Transaction</strong> 的方式，即<code>&lt;tx:annotation-driven transaction-manager=&quot;txManager&quot;/&gt;</code>发现事务仍然不能正常提交。好吧😂，继续搜索资料。</p>
+<p>下面是一般的的AOP事务注解配置：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=<span class="string">"transactionManager"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"org.springframework.orm.hibernate4.HibernateTransactionManager"</span>&gt;</div><div class="line">	&lt;property name=<span class="string">"sessionFactory"</span> ref=<span class="string">"sessionFactory"</span> /&gt;</div><div class="line">&lt;/bean&gt;</div><div class="line"></div><div class="line">&lt;tx:advice id=<span class="string">"txAdvice"</span> transaction-manager=<span class="string">"transactionManager"</span>&gt;</div><div class="line">		&lt;tx:attributes&gt;</div><div class="line">			&lt;tx:method name=<span class="string">"list*"</span> read-only=<span class="string">"true"</span> /&gt;</div><div class="line">			&lt;tx:method name=<span class="string">"save*"</span> propagation=<span class="string">"REQUIRED"</span> /&gt;</div><div class="line">		  .....</div><div class="line">		&lt;/tx:attributes&gt;</div><div class="line">	&lt;/tx:advice&gt;</div><div class="line"></div><div class="line">	&lt;aop:config proxy-target-<span class="class"><span class="keyword">class</span></span>=<span class="string">"true"</span>&gt;</div><div class="line">		&lt;aop:pointcut expression=<span class="string">"execution(public * com.example.sshdemo.service..*.*(..))"</span> id=<span class="string">"tranPointcut"</span> /&gt;</div><div class="line">		&lt;aop:advisor advice-ref=<span class="string">"txAdvice"</span> pointcut-ref=<span class="string">"tranPointcut"</span> order=<span class="string">"2"</span> /&gt;</div><div class="line">	&lt;/aop:config&gt;</div></pre></td></tr></table></figure></p>
+<p>因为同样的的配置放在SpringMVC+MyBatis3框架里能用，当时放在SpringMVC+Hibernate4上却不能用，一时间就没找到思路。在和同事的沟通中，了解到可能是父子容器导致的问题，于是朝这个方向去搜寻答案，最终发现就是父子容器重复扫描包导致的。</p>
+<p><code>spring-context.xml</code>文件里的扫描路径一般配置到主目录，例如：<code>&lt;context:component-scan base-package=&quot;com.example.sshdemo&quot; /&gt;</code>，其中sshdemo是项目的主目录。但是spring-mvc.xml里的扫描配置必须要指定到Controller所在的级别，在这里，因为Controller都是定义在<code>com.example.sshdemo.web</code>下的，所以使用如下配置：<code>&lt;context:component-scan base-package=&quot;com.example.sshdemo.web&quot; /&gt;</code>，这样配置后事务就可以正常提交了。</p>
+<p><em><strong>下面来具体解释下父子容器的问题：</strong></em><br>因为Spring框架中有两个应用上下文，ApplicationContext和WebApplicationContext，它们是父子容器，因而有可能会产生冲突。当Web应用启动时，ServletContextListener配合contextConfigLocation会先启动“业务层”的Spring容器，即父容器。然后加载SpringMVC的配置文件，这里指定的是spring-mvc.xml文件，启动Web层的Spring容器，即子容器。子容器在对Controller层进行扫描装配时如果也扫描了Service层的注解，即@Service注解的实例，那么就会致事务无法被正确的加载进来。因为事务管理器是配置在父容器中的，<code>@Service</code>实例本该由父容器进行加载，这样才能得以保证事务拥有增强处理。如果是Web层容器扫描了该注解，因为没能得到这些事务增强，因此没有没有事务处理能力。</p>
+<p><strong>PS: SpringMVC+MyBatis3没有发现上述问题，SpringMVC+Hibernate4发现了上述问题。</strong></p>
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/09/06/写在开始/" itemprop="url">
-              
-                <span itemprop="name">写在开始</span>
-              
-            </a>
-        
-      </h2>
+      
+    </div>
+    
+    
+    
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-09-06T16:16:09+08:00"
-              content="2017-09-06" >
-          09-06
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
 
       
     </div>
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SpringMVC/" rel="tag"><i class="fa fa-tag"></i> SpringMVC</a>
+          
+            <a href="/tags/Hibernate4/" rel="tag"><i class="fa fa-tag"></i> Hibernate4</a>
+          
+            <a href="/tags/Transaction/" rel="tag"><i class="fa fa-tag"></i> Transaction</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/25/Spring3.X学习笔记6-SpringAOP 增强与切面/" rel="next" title="Spring3.X学习笔记6-SpringAOP增强与切面">
+                <i class="fa fa-chevron-left"></i> Spring3.X学习笔记6-SpringAOP增强与切面
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -381,6 +536,12 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTQyOC83OTky"></div>
+    
+  </div>
+
 
         </div>
         
@@ -644,6 +805,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
 
   
 
@@ -672,6 +837,17 @@
 
 
 
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
   
 
 
